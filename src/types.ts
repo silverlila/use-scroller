@@ -1,14 +1,23 @@
 import React from 'react'
 
-export interface ScrollResponse {
-  elementRef: React.RefObject<HTMLElement>
-  isScrollable: boolean
-  isScrolledLeft: boolean
-  isScrolledRight: boolean
-  scrollToCenter: (target: HTMLElement) => void
-  scrollElementIntoView: (target: HTMLElement) => void
-  scrollToRight: () => void
-  scrollToLeft: () => void
+export type ScrollResponse<T> = {
+  ref: React.RefObject<T>
+  state: {
+    isScrollable: boolean
+    isScrolledLeft: boolean
+    isScrolledRight: boolean
+    isScrolledTop: boolean
+    isScrolledBottom: boolean
+  }
+  scrollRight: () => void
+  scrollLeft: () => void
+  scrollTop: () => void
+  scrollBottom: () => void
+  scrollTargetIntoView: (element: HTMLElement) => void
+  scrollCenter: (element: HTMLElement) => void
+}
+export type ScrollProps = {
+  direction?: 'horizontal' | 'vertical'
 }
 
-export type RenderFunction = (props: ScrollResponse) => React.ReactNode
+export type RenderFunction = (props: ScrollResponse<HTMLElement>) => React.ReactNode

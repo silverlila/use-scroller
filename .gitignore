@@ -23,6 +23,8 @@
 /packages/**/dist
 /dist
 /packages/**/dist
+/libs
+/packages/**/libs
 
 # misc
 .DS_Store

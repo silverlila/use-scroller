@@ -1,124 +1,89 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { scroller } from './scroller'
+import { ScrollResponse } from './types'
+import { getElement } from './utils'
 
-export function useScroll<T extends HTMLElement>() {
+export function useScroll<T extends HTMLElement>(): ScrollResponse<T> {
   const ref = useRef<T>(null)
+  const [state, setState] = useState(() => ({
+    isScrollable: false,
+    isScrolledLeft: false,
+    isScrolledRight: false,
+    isScrolledTop: false,
+    isScrolledBottom: false,
+  }))
 
-  const [isScrollable, setIsScrollable] = useState(false)
-  const [isScrolledRight, setIsScrolledRight] = useState(false)
-  const [isScrolledLeft, setIsScrolledLeft] = useState(false)
-
-  /**
-   * Scrolls the element into view
-   * if it's not fully in view.
-   *
-   * @params currentTarget: HTMLElement
-   */
-  const scrollElementIntoView = useCallback((currentTarget: HTMLElement) => {
-    const tabsElement = ref.current
-
-    if (!tabsElement) return
-    const { scrollLeft } = tabsElement
-
-    const tabsElementRect = tabsElement.getBoundingClientRect()
-    const selectedElementRect = currentTarget.getBoundingClientRect()
-
-    const shouldLeftScroll = tabsElementRect.left > selectedElementRect.left
-    const shouldRightScroll = tabsElementRect.right < selectedElementRect.right
-
-    if (shouldRightScroll) {
-      tabsElement.scrollTo({
-        left: scrollLeft + 120,
-        behavior: 'smooth',
-      })
-    }
-    if (shouldLeftScroll) {
-      tabsElement.scrollTo({
-        left: scrollLeft - 120,
-        behavior: 'smooth',
-      })
-    }
+  const scrollTargetIntoView = useCallback((currentTarget: HTMLElement) => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollIntoView(currentTarget)
   }, [])
 
-  /**
-   * Scrolls the element to
-   * the center of the screen.
-   *
-   * @params currentTarget: HTMLElement
-   */
-  const scrollToCenter = useCallback((currentTarget: HTMLElement) => {
-    const tabsElement = ref.current
-
-    if (!tabsElement) return
-    const { scrollLeft } = tabsElement
-
-    const targetRect = currentTarget.getBoundingClientRect()
-
-    const leftXOffset = (window.innerWidth - targetRect.width) / 2
-    const offsetDelta = targetRect.left - leftXOffset
-
-    const newScrollPosition = scrollLeft + offsetDelta
-
-    tabsElement.scrollTo({
-      behavior: 'auto',
-      left: newScrollPosition,
-    })
+  const scrollCenter = useCallback((currentTarget: HTMLElement) => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollToCenter(currentTarget)
   }, [])
 
-  /**
-   * Scrolls the container to
-   * the right by half its width.
-   */
-  const scrollToRight = useCallback(() => {
-    const tabsElement = ref.current
-
-    if (!tabsElement) return
-    const { scrollLeft, clientWidth } = tabsElement
-    const scrollDistance = scrollLeft + clientWidth / 2
-
-    tabsElement.scrollTo({ behavior: 'smooth', left: scrollDistance })
+  const scrollTop = useCallback(() => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollToTop()
   }, [])
 
-  /**
-   * Scrolls the container to
-   * the left by half its width.
-   */
-  const scrollToLeft = useCallback(() => {
-    const tabsElement = ref.current
-    if (!tabsElement) return
-    const { scrollLeft, clientWidth } = tabsElement
-    const scrollDistance = scrollLeft - clientWidth / 2
+  const scrollBottom = useCallback(() => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollToBottom()
+  }, [])
 
-    tabsElement.scrollTo({ behavior: 'smooth', left: scrollDistance })
+  const scrollRight = useCallback(() => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollToRight()
+  }, [])
+
+  const scrollLeft = useCallback(() => {
+    const scrollContainer = getElement(ref)
+    const scroll = scroller({ element: scrollContainer })
+    scroll.scrollToLeft()
   }, [])
 
   useLayoutEffect(() => {
-    const tabsElement = ref.current
-    if (!tabsElement) return
+    const scrollContainer = ref.current
+    if (!scrollContainer) return
 
-    const { scrollWidth, clientWidth } = tabsElement
-    setIsScrollable(clientWidth !== scrollWidth)
+    const { scrollWidth, clientWidth, clientHeight, scrollHeight } = scrollContainer
+    const isScrollable = clientWidth !== scrollWidth || clientHeight !== scrollHeight
+    setState((prev) => ({ ...prev, isScrollable }))
 
     const handleScroll = () => {
-      if (tabsElement) {
-        const { scrollLeft } = tabsElement
-        setIsScrolledLeft(scrollLeft === 0)
-        setIsScrolledRight(scrollLeft >= scrollWidth - clientWidth - 10)
+      if (scrollContainer) {
+        const { scrollLeft, scrollTop } = scrollContainer
+        const scrollState = {
+          ...state,
+          isScrolledLeft: scrollLeft === 0,
+          isScrolledRight: scrollLeft >= scrollWidth - clientWidth - 10,
+          isScrolledTop: scrollTop === 0,
+          isScrolledBottom: scrollTop >= scrollHeight - clientHeight - 10,
+        }
+        setState(scrollState)
       }
     }
 
     handleScroll()
-    tabsElement?.addEventListener('scroll', handleScroll)
-    return () => tabsElement?.removeEventListener('scroll', handleScroll)
+    scrollContainer?.addEventListener('scroll', handleScroll)
+    return () => scrollContainer?.removeEventListener('scroll', handleScroll)
   }, [])
 
   return {
     ref,
-    isScrollable,
-    isScrolledLeft,
-    isScrolledRight,
-    scrollToCenter,
-    scrollToRight,
-    scrollToLeft,
-    scrollElementIntoView,
+    state,
+    scrollCenter,
+    scrollRight,
+    scrollTop,
+    scrollBottom,
+    scrollLeft,
+    scrollTargetIntoView,
   }
 }
