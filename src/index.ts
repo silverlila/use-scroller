@@ -1,2 +1,2 @@
-export * from './useScroll'
-export * from './ScrollableContainer'
+export * from './types'
+export * from './use-scroll'
