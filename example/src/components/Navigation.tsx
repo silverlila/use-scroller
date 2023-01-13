@@ -3,11 +3,10 @@ import { useScroll } from 'use-scroll'
 import { Button } from './Button'
 
 export default function Navigation() {
-  const { ref, state, scrollLeft, scrollRight } = useScroll<any>({ container: window })
+  const { ref, state, scrollLeft, scrollRight } = useScroll<any>({})
 
   const { isScrolledLeft, isScrolledRight } = state
-  console.log('navigation', ref)
-  console.log({ state })
+
   return (
     <section>
       <h1 className="font-bold mb-10">Navigation</h1>

@@ -1,28 +1,38 @@
-import { useCallback, useLayoutEffect, useState } from 'react'
-import { scroller } from './scroller'
-import { ScrollProps } from './types'
-import { resolveScrollValues } from './utils'
+import { useCallback, useState } from 'react'
+import { scroller } from '../scroller'
+import { ScrollerProps, ScrollOptions } from '../types'
+import { useIsoMorphicEffect } from './use-iso-morphic-effect'
+import { defaultScrollOptions, resolveScrollValues } from '../utils'
 
-export function useWindowScroll({ direction = 'vertical', duration = 300 }: ScrollProps) {
+export function useWindowScroll(props?: Partial<ScrollOptions>) {
   const [state, setState] = useState(() => ({
     left: 0,
     top: 0,
     isScrolledTop: false,
     isScrolledBottom: false,
   }))
-  const props = { direction, duration }
+
+  const scrollArgs: ScrollerProps = {
+    container: window,
+    options: { ...defaultScrollOptions, ...props },
+  }
+
+  const scrollToTarget = useCallback((currentTarget: HTMLElement) => {
+    const scrollContainer = scroller(scrollArgs)
+    scrollContainer.scrollToTarget(currentTarget)
+  }, [])
 
   const scrollTop = useCallback((offset?: number | undefined) => {
-    const scrollContainer = scroller({ ...props, container: window })
+    const scrollContainer = scroller(scrollArgs)
     scrollContainer.scrollToTop(offset)
   }, [])
 
   const scrollBottom = useCallback((offset?: number | undefined) => {
-    const scrollContainer = scroller({ ...props, container: window })
+    const scrollContainer = scroller(scrollArgs)
     scrollContainer.scrollToBottom(offset)
   }, [])
 
-  useLayoutEffect(() => {
+  useIsoMorphicEffect(() => {
     const handleScroll = () => {
       if (window) {
         const { scrollLeft, scrollTop, scrollHeight, clientHeight } = resolveScrollValues(window)
@@ -42,5 +52,5 @@ export function useWindowScroll({ direction = 'vertical', duration = 300 }: Scro
     return () => window?.removeEventListener('scroll', handleScroll)
   }, [])
 
-  return { state, scrollTop, scrollBottom }
+  return { state, scrollTop, scrollBottom, scrollToTarget }
 }

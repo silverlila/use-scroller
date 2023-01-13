@@ -1,14 +1,11 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { ScrollProps, ScrollResponse } from './types'
-import { scroller } from './scroller'
-import { getElement } from './utils'
+import { useCallback, useRef, useState } from 'react'
+import { scroller } from '../scroller'
+import { ScrollOptions } from '../types'
+import { defaultScrollOptions, getElement } from '../utils'
+import { useIsoMorphicEffect } from './use-iso-morphic-effect'
 
-export function useScroll<T extends HTMLElement>({
-  direction = 'vertical',
-  duration = 300,
-}: ScrollProps): ScrollResponse<T> {
+export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>) {
   const ref = useRef<T>(null)
-  const props = { direction, duration }
   const [state, setState] = useState(() => ({
     left: 0,
     top: 0,
@@ -18,38 +15,39 @@ export function useScroll<T extends HTMLElement>({
     isScrolledTop: false,
     isScrolledBottom: false,
   }))
+  const scrollOpt = { ...defaultScrollOptions, ...props }
 
-  const scrollToTarget = useCallback((currentTarget: HTMLElement) => {
+  const scrollCenter = useCallback(() => {
     const container = getElement(ref)
-    const scrollContainer = scroller({ ...props, container })
-    scrollContainer.scrollToTarget(currentTarget)
+    const scrollContainer = scroller({ container, options: scrollOpt })
+    scrollContainer.scrollToCenter()
   }, [])
 
-  const scrollTop = useCallback((offset?: number | undefined) => {
+  const scrollTop = useCallback((offset?: number) => {
     const container = getElement(ref)
-    const scrollContainer = scroller({ ...props, container })
+    const scrollContainer = scroller({ container, options: scrollOpt })
     scrollContainer.scrollToTop(offset)
   }, [])
 
-  const scrollBottom = useCallback((offset?: number | undefined) => {
+  const scrollBottom = useCallback((offset?: number) => {
     const container = getElement(ref)
-    const scrollContainer = scroller({ ...props, container })
+    const scrollContainer = scroller({ container, options: scrollOpt })
     scrollContainer.scrollToBottom(offset)
   }, [])
 
-  const scrollRight = useCallback((offset?: number | undefined) => {
+  const scrollRight = useCallback((offset?: number) => {
     const container = getElement(ref)
-    const scrollContainer = scroller({ ...props, container })
+    const scrollContainer = scroller({ container, options: scrollOpt })
     scrollContainer.scrollToRight(offset)
   }, [])
 
-  const scrollLeft = useCallback((offset?: number | undefined) => {
+  const scrollLeft = useCallback((offset?: number) => {
     const container = getElement(ref)
-    const scrollContainer = scroller({ ...props, container })
+    const scrollContainer = scroller({ container, options: scrollOpt })
     scrollContainer.scrollToLeft(offset)
   }, [])
 
-  useLayoutEffect(() => {
+  useIsoMorphicEffect(() => {
     const scrollContainer = ref.current
     if (!scrollContainer) return
 
@@ -85,6 +83,7 @@ export function useScroll<T extends HTMLElement>({
     scrollRight,
     scrollBottom,
     scrollTop,
-    scrollToTarget,
+    scrollCenter,
+    scroll,
   }
 }

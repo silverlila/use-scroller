@@ -1,10 +1,11 @@
 import { RefObject } from 'react'
+import { EasingFunction, EasingFunctions, EasingOptions, ScrollOptions } from './types'
 
-export const getElement = (ref: RefObject<HTMLElement>) => {
-  if (!ref.current) {
-    throw new Error(`Could not resolve ref object: ${ref.current}`)
-  }
-  return ref.current
+export const isServer = typeof window === 'undefined' || typeof document === 'undefined'
+export const defaultScrollOptions: ScrollOptions = {
+  direction: 'vertical',
+  duration: 300,
+  easingOption: 'linear',
 }
 
 export const resolveScrollValues = (element: HTMLElement | Window) => {
@@ -30,6 +31,13 @@ export const resolveScrollValues = (element: HTMLElement | Window) => {
     clientHeight: element.clientHeight,
     scrollHeight: element.scrollHeight,
   }
+}
+
+export const getElement = (ref: RefObject<HTMLElement>) => {
+  if (!ref.current) {
+    throw new Error(`Could not resolve ref object: ${ref.current}`)
+  }
+  return ref.current
 }
 
 /**
@@ -65,19 +73,29 @@ export function scrollValues(element: ScrollableElement) {
   }
 }
 
-/**
- * easeOutQuart Easing Function
- * @param  {number} t - current time
- * @param  {number} b - start value
- * @param  {number} c - change in value
- * @param  {number} d - duration
- * @return {number} - calculated value
- */
-export function easeOutQuart(t: number, b: number, c: number, d: number) {
-  t /= d / 2
-  if (t < 1) {
-    return (c / 2) * t * t + b
+export const easingMap: EasingFunctions = {
+  linear(t: number) {
+    return t
+  },
+  'ease-in'(t: number) {
+    return t * t
+  },
+  'ease-out'(t: number) {
+    return t * (2 - t)
+  },
+  'ease-in-out'(t: number) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  },
+}
+
+export const getEasing = (easing?: EasingOptions): EasingFunction => {
+  const defaultEasing = 'linear'
+  const easeFunc = easingMap[easing || defaultEasing]
+  if (!easeFunc) {
+    const options = Object.keys(easingMap).join(',')
+    throw new Error(
+      `Scroll error: scroller does not support an easing option of "${easing}". Supported options are ${options}`
+    )
   }
-  t--
-  return (-c / 2) * (t * (t - 2) - 1) + b
+  return easeFunc
 }

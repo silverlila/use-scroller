@@ -1,30 +1,39 @@
 import { ScrollerProps } from './types'
-import { resolveScrollValues, validateElement } from './utils'
+import { defaultScrollOptions, getEasing, resolveScrollValues, validateElement } from './utils'
 
-export function scroller({ container, direction = 'horizontal', duration = 300 }: ScrollerProps) {
+export function scroller({ container, options = defaultScrollOptions }: ScrollerProps) {
   validateElement(container)
 
-  const { scrollLeft, scrollTop, clientWidth, clientHeight } = resolveScrollValues(container)
+  const { duration, easingOption, direction } = options
 
+  const { scrollLeft, scrollTop, clientWidth, clientHeight, scrollWidth, scrollHeight } =
+    resolveScrollValues(container)
+
+  /**
+   * Scroll the Element or Window to the given
+   * position.
+   *
+   * @param {number} from the current scroll position.
+   * @param {number} to the new position to scroll.
+   * @param {number} layout the scroll direction.
+   */
   function scrollTo(from: number, to: number, layout: 'horizontal' | 'vertical') {
     let startTime: number | null = null
     let requestId = 0
 
     function loop(currentTime: number) {
-      if (!startTime) {
-        startTime = currentTime
-      }
+      if (!startTime) startTime = currentTime
 
-      const time = currentTime - startTime
-      const percent = Math.min(time / duration, 1)
-      const position = from + to * percent
+      const time = Math.min((currentTime - startTime) / duration, 1)
+      const easingFunc = getEasing(easingOption)
+      const currentPositionInTime = easingFunc(time) * (to - from) + from
 
       container.scrollTo({
-        left: layout === 'horizontal' ? position : undefined,
-        top: layout === 'vertical' ? position : undefined,
+        left: layout === 'horizontal' ? currentPositionInTime : undefined,
+        top: layout === 'vertical' ? currentPositionInTime : undefined,
       })
 
-      if (time < duration) {
+      if (time < 1) {
         requestId = requestAnimationFrame(loop)
       } else {
         cancelAnimationFrame(requestId)
@@ -33,39 +42,39 @@ export function scroller({ container, direction = 'horizontal', duration = 300 }
     requestId = requestAnimationFrame(loop)
   }
 
-  function scrollToTarget(target: HTMLElement) {
-    function scrollToTargetY() {
-      const { top } = target.getBoundingClientRect()
-      scrollTo(scrollTop, top, 'horizontal')
-    }
-    function scrollToTargetX() {
-      const { left } = target.getBoundingClientRect()
-      scrollTo(scrollLeft, left, 'horizontal')
-    }
-    if (direction == 'vertical') {
-      scrollToTargetY()
+  function scrollToCenter() {
+    if (direction === 'horizontal') {
+      const scrollXPosition = (scrollWidth - clientWidth) / 2
+      scrollTo(scrollLeft, scrollXPosition, 'horizontal')
     } else {
-      scrollToTargetX()
+      const scrollYPosition = (scrollHeight - clientHeight) / 2
+      scrollTo(scrollTop, scrollYPosition, 'vertical')
     }
   }
 
+  function scrollToTarget(target: HTMLElement) {
+    validateElement(target)
+    const { offsetTop } = target
+    scrollTo(scrollTop, offsetTop, 'vertical')
+  }
+
   const scrollToLeft = (offset?: number) => {
-    const scrollPosition = offset || -clientWidth
+    const scrollPosition = offset || scrollLeft - clientWidth
     scrollTo(scrollLeft, scrollPosition, 'horizontal')
   }
 
   const scrollToRight = (offset?: number) => {
-    const scrollPosition = offset || clientWidth
+    const scrollPosition = offset || scrollLeft + clientWidth
     scrollTo(scrollLeft, scrollPosition, 'horizontal')
   }
 
   const scrollToTop = (offset?: number) => {
-    const scrollPosition = offset || -clientHeight
+    const scrollPosition = offset || scrollTop - clientHeight
     scrollTo(scrollTop, scrollPosition, 'vertical')
   }
 
   const scrollToBottom = (offset?: number) => {
-    const scrollPosition = offset || clientHeight
+    const scrollPosition = offset || scrollTop + clientHeight
     scrollTo(scrollTop, scrollPosition, 'vertical')
   }
 
@@ -75,5 +84,6 @@ export function scroller({ container, direction = 'horizontal', duration = 300 }
     scrollToTop,
     scrollToBottom,
     scrollToTarget,
+    scrollToCenter,
   }
 }

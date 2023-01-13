@@ -1,2 +1,3 @@
 export * from './types'
-export * from './use-scroll'
+export * from './hooks/use-scroll'
+export * from './hooks/use-window-scroll'
