@@ -84,6 +84,5 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
     scrollBottom,
     scrollTop,
     scrollCenter,
-    scroll,
   }
 }
