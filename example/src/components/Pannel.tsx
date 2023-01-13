@@ -2,13 +2,13 @@ import { useScroll } from 'use-scroll'
 import { Button } from './Button'
 
 export default function Pannel() {
-  const { ref, state, scrollLeft, scrollRight, scrollBottom, scrollTop, scrollCenter } =
-    useScroll<any>()
-
+  const { ref, state, scrollLeft, scrollRight, scrollBottom, scrollTop, scrollCenter } = useScroll({
+    direction: 'horizontal',
+  })
   const { isScrolledLeft, isScrolledRight, isScrolledTop, isScrolledBottom } = state
 
   return (
-    <>
+    <section>
       <h1 className="font-bold mb-10">Basic example</h1>
       <div className="flex gap-10">
         <div className="flex flex-col gap-5">
@@ -50,11 +50,11 @@ export default function Pannel() {
         <section
           ref={ref}
           id="scroll-container"
-          className="w-[50%] h-[50vh]  p-10 bg-indigo-50 overflow-auto"
+          className="w-[50%] h-[50vh] p-10 bg-indigo-50 overflow-auto"
         >
-          <div className="inner h-[100vh] w-[100vw]"></div>
+          <div className="inner h-[100vh] w-[100vw]" />
         </section>
       </div>
-    </>
+    </section>
   )
 }

@@ -1,41 +1,57 @@
 import { useRef } from 'react'
 import { useWindowScroll } from 'use-scroll'
-import { Button } from './components/Button'
-import Navigation from './components/Navigation'
+import Carousel from './components/Carousel'
 import Pannel from './components/Pannel'
 
 function App() {
-  const { state, scrollToTarget } = useWindowScroll()
-  const ref1 = useRef<HTMLDivElement>(null)
-  const ref2 = useRef<HTMLDivElement>(null)
-  const ref3 = useRef<HTMLDivElement>(null)
-  console.log({ state })
+  const { scrollToTarget } = useWindowScroll()
+  const defaultRef = useRef<HTMLDivElement>(null)
+  const navRef = useRef<HTMLDivElement>(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
+
   return (
-    <div className="App bg-gray-50 h-full">
-      <div className="container relative mx-auto p-10 ">
-        <h1 className="text-center text-4xl font-semibold">use-scroll</h1>
-        <hr className="my-10" />
-        <Pannel />
-        <hr className="my-20" />
-        <Navigation />
-        <hr className="my-20" />
-        <section className="relative py-10">
-          <ul className="flex absolute left-0 top-0">
-            <li>
-              <Button onClick={() => scrollToTarget(ref1.current as HTMLElement)}>Element 1</Button>
-            </li>
-            <li>
-              <Button onClick={() => scrollToTarget(ref2.current as HTMLElement)}>Element 2</Button>
-            </li>
-            <li>
-              <Button onClick={() => scrollToTarget(ref3.current as HTMLElement)}>Element 3</Button>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <div ref={ref1} className="element-1 w-full h-screen bg-indigo-300 mb-5"></div>
-          <div ref={ref2} className="element-2 w-full h-screen bg-indigo-300 mb-5"></div>
-          <div ref={ref3} className="element-3 w-full h-screen bg-indigo-300 mb-5"></div>
+    <div className="App bg-gray-50 h-full overflow-hidden">
+      <nav className="mx-auto flex justify-between  p-5 fixed bg-white w-full z-50">
+        <h1 className="font-sans font-bold">use-scroll</h1>
+        <ul className="flex justify-center divide-x">
+          <li>
+            <button
+              className="font-normal text-gray-600 text-center px-5"
+              onClick={() => scrollToTarget(defaultRef.current as HTMLElement)}
+            >
+              Default
+            </button>
+          </li>
+          <li>
+            <button
+              className="font-normal text-gray-600 text-center px-5"
+              onClick={() => scrollToTarget(navRef.current as HTMLElement)}
+            >
+              Navigation
+            </button>
+          </li>
+          <li>
+            <button
+              className="font-normal text-gray-600 text-center px-5"
+              onClick={() => scrollToTarget(carouselRef.current as HTMLElement)}
+            >
+              Carousel
+            </button>
+          </li>
+        </ul>
+        <h1>github</h1>
+      </nav>
+      <div className="container relative mx-auto overflow-hidden">
+        <section className="divide-y">
+          <div ref={defaultRef} className="py-10 h-screen flex items-center">
+            <Pannel />
+          </div>
+          <div ref={navRef} className="py-10 h-screen flex items-center">
+            <Pannel />
+          </div>
+          <div ref={carouselRef} className="py-10 h-screen flex items-center">
+            <Carousel />
+          </div>
         </section>
       </div>
     </div>
