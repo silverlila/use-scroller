@@ -4,7 +4,7 @@ import { ScrollerProps, ScrollOptions } from '../types'
 import { useIsoMorphicEffect } from './use-iso-morphic-effect'
 import { defaultScrollOptions, resolveScrollValues } from '../utils'
 
-export function useWindowScroll(props?: Partial<ScrollOptions>) {
+export function useWindowScroll(props?: Partial<Omit<ScrollOptions, 'direction'>>) {
   const [state, setState] = useState(() => ({
     left: 0,
     top: 0,

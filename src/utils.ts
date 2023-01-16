@@ -79,8 +79,7 @@ export const easingMap: EasingFunctions = {
 }
 
 export const getEasing = (easing?: EasingOptions): EasingFunction => {
-  const defaultEasing = 'linear'
-  const easeFunc = easingMap[easing || defaultEasing]
+  const easeFunc = easingMap[easing || defaultScrollOptions.easingOption]
   if (!easeFunc) {
     const options = Object.keys(easingMap).join(',')
     throw new Error(
