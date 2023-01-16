@@ -2,12 +2,17 @@ import { RefObject } from 'react'
 import { EasingFunction, EasingFunctions, EasingOptions, ScrollOptions } from './types'
 
 export const isServer = typeof window === 'undefined' || typeof document === 'undefined'
+
 export const defaultScrollOptions: ScrollOptions = {
   direction: 'vertical',
   duration: 300,
-  easingOption: 'linear',
+  easingOption: 'ease-in-out',
 }
 
+/**
+ * Resolves scroll values based on the type of param.
+ * @param {HTMLElement | Window} element
+ */
 export const resolveScrollValues = (element: HTMLElement | Window) => {
   if (
     element === document.body ||
@@ -33,16 +38,9 @@ export const resolveScrollValues = (element: HTMLElement | Window) => {
   }
 }
 
-export const getElement = (ref: RefObject<HTMLElement>) => {
-  if (!ref.current) {
-    throw new Error(`Could not resolve ref object: ${ref.current}`)
-  }
-  return ref.current
-}
-
 /**
  * Validate if element passed to the function is valid.
- * @param element {HTMLElement | Window}
+ * @param {HTMLElement | Window} element
  */
 export function validateElement(element?: HTMLElement | Window) {
   if (element === undefined) {
@@ -58,19 +56,11 @@ export function validateElement(element?: HTMLElement | Window) {
   }
 }
 
-export type ScrollableElement = (Element & HTMLElement) | Window
-
-/**
- * If the currentTarget is the window then we return the scrollX/Y position.
- * If not (ie the currentTarget is a DOM element), then we return scrollLeft/Top
- * @param event
- */
-export function scrollValues(element: ScrollableElement) {
-  const { scrollX, scrollY, scrollLeft, scrollTop } = element as Element & Window
-  return {
-    scrollTop: scrollY ?? scrollTop ?? 0,
-    scrollLeft: scrollX ?? scrollLeft ?? 0,
+export const getElement = (ref: RefObject<HTMLElement>) => {
+  if (!ref.current) {
+    throw new Error(`Could not resolve ref object: ${ref.current}`)
   }
+  return ref.current
 }
 
 export const easingMap: EasingFunctions = {

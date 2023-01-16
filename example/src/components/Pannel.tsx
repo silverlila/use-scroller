@@ -4,6 +4,8 @@ import { Button } from './Button'
 export default function Pannel() {
   const { ref, state, scrollLeft, scrollRight, scrollBottom, scrollTop, scrollCenter } = useScroll({
     direction: 'horizontal',
+    duration: 800,
+    easingOption: 'ease-in-out',
   })
   const { isScrolledLeft, isScrolledRight, isScrolledTop, isScrolledBottom } = state
 

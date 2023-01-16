@@ -5,7 +5,6 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
   validateElement(container)
 
   const { duration, easingOption, direction } = options
-
   const { scrollLeft, scrollTop, clientWidth, clientHeight, scrollWidth, scrollHeight } =
     resolveScrollValues(container)
 
@@ -15,7 +14,7 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
    *
    * @param {number} from the current scroll position.
    * @param {number} to the new position to scroll.
-   * @param {number} layout the scroll direction.
+   * @param {string} layout the scroll direction.
    */
   function scrollTo(from: number, to: number, layout: 'horizontal' | 'vertical') {
     let startTime: number | null = null
@@ -43,19 +42,40 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
   }
 
   function scrollToCenter() {
-    if (direction === 'horizontal') {
-      const scrollXPosition = (scrollWidth - clientWidth) / 2
-      scrollTo(scrollLeft, scrollXPosition, 'horizontal')
-    } else {
-      const scrollYPosition = (scrollHeight - clientHeight) / 2
-      scrollTo(scrollTop, scrollYPosition, 'vertical')
+    let from = 0
+    let to = 0
+
+    if (direction === 'vertical') {
+      const scrollYCenterPosition = (scrollHeight - clientHeight) / 2
+      from = scrollTop
+      to = scrollYCenterPosition
     }
+
+    if (direction === 'horizontal') {
+      const scrollXCenterPosition = (scrollWidth - clientWidth) / 2
+      from = scrollLeft
+      to = scrollXCenterPosition
+    }
+    scrollTo(from, to, direction)
   }
 
   function scrollToTarget(target: HTMLElement) {
     validateElement(target)
-    const { offsetTop } = target
-    scrollTo(scrollTop, offsetTop, 'vertical')
+    const { offsetTop, offsetLeft } = target
+    let from = 0
+    let to = 0
+
+    if (direction === 'vertical') {
+      from = scrollTop
+      to = offsetTop
+    }
+
+    if (direction === 'horizontal') {
+      from = scrollLeft
+      to = offsetLeft
+    }
+
+    scrollTo(from, to, direction)
   }
 
   const scrollToLeft = (offset?: number) => {
