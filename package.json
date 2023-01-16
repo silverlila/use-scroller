@@ -17,7 +17,7 @@
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "clean": "rm -rf ./dist",
     "test": "jest",
-    "lint": "lint"
+    "lint": "lint ./src/*"
   },
   "prettier": {
     "printWidth": 100,

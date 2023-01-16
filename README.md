@@ -83,16 +83,14 @@ export default function ScrollBox() {
 }
 ```
 
-## Available hooks
+## API Documentation
 
-use-scroll exports 2 hooks that can handle different scroll operations:
+#### Available hooks
 
 | Hook              | Description                   |
 | ----------------- | ----------------------------- |
 | `useScroll`       | Handles element scroll events |
 | `useWindowScroll` | Handles window scroll events  |
-
-## API Documentation
 
 #### useScroll(options)
 
