@@ -8,9 +8,7 @@ A light-weight library that will allow you to scroll any html element using simp
 In addition to providing extra scrolling features, this library also return a number of callback that can triger scroll operation depending on the user needs.
 
 <p align="middle">
-  <b>Carousel</b>
   <img src="https://s9.gifyu.com/images/ezgif.com-gif-maker3092e8916a41884d.gif" width="400"/>
-  <b>Box</b>
   <img src="https://s3.gifyu.com/images/ezgif.com-gif-maker-1c4ee7c66dcd4dd01.gif" width="400"/>
 </p>
 
