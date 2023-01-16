@@ -96,11 +96,11 @@ use-scroll exports 2 hooks that can handle different scroll operations:
 
 #### useScroll(options)
 
-| Option         | Type            | Description                            |
-| -------------- | --------------- | -------------------------------------- | ---------------------------------- |
-| `direction`    | `horizontal     | vertical`                              | Set's the desired scroll direction |
-| `duration`     | `number`        | Set's the animation duration to scroll |
-| `easingOption` | `EasingOptions` | Set's the type of animation to scroll  |
+| Option         | Type            | Description                                  |
+| -------------- | --------------- | -------------------------------------------- |
+| `direction`    | `horizontal     | vertical` Set's the desired scroll direction |
+| `duration`     | `number`        | Set's the animation duration to scroll       |
+| `easingOption` | `EasingOptions` | Set's the type of animation to scroll        |
 
 #### useWindowScroll(options)
 
