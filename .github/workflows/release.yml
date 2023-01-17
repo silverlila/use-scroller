@@ -27,6 +27,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
+          version: yarn bump
           publish: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
