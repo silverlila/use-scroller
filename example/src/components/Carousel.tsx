@@ -1,12 +1,11 @@
 import React from 'react'
-import { useScroll } from 'use-scroll'
+import { useScroll } from 'use-scroller'
 
 export default function Carousel() {
-  const { ref, state, scrollLeft, scrollRight, scrollTop, scrollBottom } =
-    useScroll<HTMLDivElement>({
-      easingOption: 'ease-in-out',
-      duration: 800,
-    })
+  const { ref, state, scrollLeft, scrollRight } = useScroll<HTMLDivElement>({
+    easingOption: 'ease-in-out',
+    duration: 800,
+  })
   const { isScrolledLeft, isScrolledRight } = state
   return (
     <>

@@ -1,12 +1,11 @@
 import { useRef } from 'react'
-import { useWindowScroll } from 'use-scroll'
+import { useWindowScroll } from 'use-scroller'
 import Carousel from './components/Carousel'
 import Pannel from './components/Pannel'
 
 function App() {
   const { scrollToTarget } = useWindowScroll()
   const defaultRef = useRef<HTMLDivElement>(null)
-  const navRef = useRef<HTMLDivElement>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -25,14 +24,6 @@ function App() {
           <li>
             <button
               className="font-normal text-gray-600 text-center px-5"
-              onClick={() => scrollToTarget(navRef.current as HTMLElement)}
-            >
-              Navigation
-            </button>
-          </li>
-          <li>
-            <button
-              className="font-normal text-gray-600 text-center px-5"
               onClick={() => scrollToTarget(carouselRef.current as HTMLElement)}
             >
               Carousel
@@ -44,9 +35,6 @@ function App() {
       <div className="container relative mx-auto overflow-hidden">
         <section className="divide-y">
           <div ref={defaultRef} className="py-10 h-screen flex items-center">
-            <Pannel />
-          </div>
-          <div ref={navRef} className="py-10 h-screen flex items-center">
             <Pannel />
           </div>
           <div ref={carouselRef} className="py-10 h-screen flex items-center">
