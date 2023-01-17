@@ -16,7 +16,7 @@ In addition to providing extra scrolling features, this library also return a nu
 
 ### React
 
-```bash
+```javascript
 #YARN
 yarn add use-scroll
 
@@ -32,7 +32,7 @@ pnpm install use-scroll
 
 ### Carousel
 
-```bash
+```javascript
 import { useScroll } from 'use-scroll'
 
 export default function Carousel() {
