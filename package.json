@@ -15,6 +15,10 @@
     "hook",
     "scroll"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silvi97lila/use-scroller.git"
+  },
   "scripts": {
     "build": "yarn clean && yarn build:esm && yarn build:cjs",
     "build:watch": "yarn build --watch",

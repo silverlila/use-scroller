@@ -4,7 +4,7 @@ import Carousel from './components/Carousel'
 import Pannel from './components/Pannel'
 
 function App() {
-  const { scrollToTarget } = useWindowScroll()
+  const { scrollToTarget, scrollBottom, scrollTop } = useWindowScroll()
   const defaultRef = useRef<HTMLDivElement>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
 
@@ -27,6 +27,22 @@ function App() {
               onClick={() => scrollToTarget(carouselRef.current as HTMLElement)}
             >
               Carousel
+            </button>
+          </li>
+          <li>
+            <button
+              className="font-normal text-gray-600 text-center px-5"
+              onClick={() => scrollBottom()}
+            >
+              Scroll bottom
+            </button>
+          </li>
+          <li>
+            <button
+              className="font-normal text-gray-600 text-center px-5"
+              onClick={() => scrollTop()}
+            >
+              Scroll top
             </button>
           </li>
         </ul>

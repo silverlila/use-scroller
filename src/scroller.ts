@@ -16,7 +16,7 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
    * @param {number} to the new position to scroll.
    * @param {string} layout the scroll direction.
    */
-  function scrollTo(from: number, to: number, layout: 'horizontal' | 'vertical') {
+  function scrollTo(from: number, to: number, layout: 'horizontal' | 'vertical' = direction) {
     let startTime: number | null = null
     let requestId = 0
 
@@ -105,5 +105,6 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
     scrollToBottom,
     scrollToTarget,
     scrollToCenter,
+    scrollTo,
   }
 }

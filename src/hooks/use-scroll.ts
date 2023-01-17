@@ -17,6 +17,12 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
   }))
   const scrollOpt = { ...defaultScrollOptions, ...props }
 
+  const scroll = useCallback((from: number, to: number) => {
+    const container = getElement(ref)
+    const scrollContainer = scroller({ container, options: scrollOpt })
+    scrollContainer.scrollTo(from, to)
+  }, [])
+
   const scrollCenter = useCallback(() => {
     const container = getElement(ref)
     const scrollContainer = scroller({ container, options: scrollOpt })
@@ -84,5 +90,6 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
     scrollBottom,
     scrollTop,
     scrollCenter,
+    scroll,
   }
 }

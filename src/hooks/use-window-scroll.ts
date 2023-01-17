@@ -16,6 +16,10 @@ export function useWindowScroll(props?: Partial<Omit<ScrollOptions, 'direction'>
     container: window,
     options: { ...defaultScrollOptions, ...props },
   }
+  const scroll = useCallback((from: number, to: number) => {
+    const scrollContainer = scroller(scrollArgs)
+    scrollContainer.scrollTo(from, to)
+  }, [])
 
   const scrollToTarget = useCallback((currentTarget: HTMLElement) => {
     const scrollContainer = scroller(scrollArgs)
@@ -52,5 +56,5 @@ export function useWindowScroll(props?: Partial<Omit<ScrollOptions, 'direction'>
     return () => window?.removeEventListener('scroll', handleScroll)
   }, [])
 
-  return { state, scrollTop, scrollBottom, scrollToTarget }
+  return { state, scrollTop, scrollBottom, scrollToTarget, scroll }
 }
