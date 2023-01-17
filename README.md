@@ -54,7 +54,7 @@ export default function Carousel() {
 
 ### Box
 
-```bash
+```javascript
 import { useScroll } from 'use-scroll'
 
 export default function ScrollBox() {
