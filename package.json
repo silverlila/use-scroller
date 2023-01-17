@@ -1,5 +1,5 @@
 {
-  "name": "@use-scroll/react",
+  "name": "use-scroller",
   "version": "1.0.0",
   "author": "silvi lila",
   "license": "MIT",
@@ -9,6 +9,11 @@
   "files": [
     "dist",
     "src"
+  ],
+  "keywords": [
+    "react",
+    "hook",
+    "scroll"
   ],
   "scripts": {
     "build": "yarn clean && yarn build:esm && yarn build:cjs",
