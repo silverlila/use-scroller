@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useWindowScroll } from 'use-scroller'
+import { useWindowScroll } from 'use-scrollerer'
 import Carousel from './components/Carousel'
 import Pannel from './components/Pannel'
 
@@ -19,22 +19,6 @@ function App() {
               onClick={() => scrollToTarget(defaultRef.current as HTMLElement)}
             >
               Default
-            </button>
-          </li>
-          <li>
-            <button
-              className="font-normal text-gray-600 text-center px-5"
-              onClick={() => scrollToTarget(carouselRef.current as HTMLElement)}
-            >
-              Carousel
-            </button>
-          </li>
-          <li>
-            <button
-              className="font-normal text-gray-600 text-center px-5"
-              onClick={() => scrollBottom()}
-            >
-              Scroll bottom
             </button>
           </li>
           <li>
