@@ -8644,8 +8644,10 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-use-scroll@../:
+use-scroller@^1.0.0:
   version "1.0.0"
+  resolved "https://registry.yarnpkg.com/use-scroller/-/use-scroller-1.0.0.tgz#a66ae4812bdaa52ef48137f569c6d4566e76f6bf"
+  integrity sha512-meTcdvOUHbvpSNV71F2cpVuGigGRpnoYJ/yx5rhakMv0rmfAWZiPxOsNIf657qPDklBxj5nQKmEVsuNE6zq3Xg==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

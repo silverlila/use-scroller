@@ -23,6 +23,7 @@
     "clean": "rm -rf ./dist",
     "test": "jest",
     "lint": "lint ./src/*",
+    "bump": "changeset version",
     "release": "yarn build && changeset publish",
     "changeset": "changeset"
   },

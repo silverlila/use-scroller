@@ -1,5 +1,5 @@
 import React from 'react'
-import { useScroll } from 'use-scroll'
+import { useScroll } from 'use-scroller'
 import { Button } from './Button'
 
 export default function Navigation() {
