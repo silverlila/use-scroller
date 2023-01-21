@@ -143,7 +143,7 @@ export default function App() {
 | `duration`     | `number`                 | 300         | Set the animation duration to scroll |
 | `easingOption` | `EasingOptions`          | ease-in-out | Set the type of animation to scroll  |
 
-#### useWindowScroll hook
+#### useWindowScroll
 
 | Option         | Type            | Default     | Description                          |
 | -------------- | --------------- | ----------- | ------------------------------------ |
