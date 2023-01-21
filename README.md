@@ -83,6 +83,33 @@ export default function ScrollBox() {
 }
 ```
 
+### Scroll to target
+
+```javascript
+import { useScroll } from 'use-scroller'
+
+export default function ScrollBox() {
+  const { scrollToTarget } = useWindowScroll()
+  const ref1 = useRef(null)
+  const ref2 = useRef(null)
+  const ref3 = useRef(null)
+
+  return (
+    <>
+      <Navigation>
+        <Item onClick={() => scrollToTarget(ref1)}>Target 1</Item>
+        <Item onClick={() => scrollToTarget(ref2)}>Target 2</Item>
+        <Item onClick={() => scrollToTarget(ref3)}>Target 3</Item>
+      </Navigation>
+
+      <FirstTarget ref={ref1} />
+      <SecondTarget ref={ref2} />
+      <ThirdTarget ref={ref3} />
+    </>
+  )
+}
+```
+
 ## API Documentation
 
 #### Available hooks
@@ -92,17 +119,21 @@ export default function ScrollBox() {
 | `useScroll`       | Handles element scroll events |
 | `useWindowScroll` | Handles window scroll events  |
 
-#### useScroll(options)
+#### useScroll hook
 
-| Option         | Type                     | Description                          |
-| -------------- | ------------------------ | ------------------------------------ |
-| `direction`    | `horizontal or vertical` | Set the desired scroll direction     |
-| `duration`     | `number`                 | Set the animation duration to scroll |
-| `easingOption` | `EasingOptions`          | Set the type of animation to scroll  |
+**Options**
 
-#### useWindowScroll(options)
+| Option         | Type                     | Default     | Description                          |
+| -------------- | ------------------------ | ----------- | ------------------------------------ |
+| `direction`    | `horizontal or vertical` | vertical    | Set the desired scroll direction     |
+| `duration`     | `number`                 | 300         | Set the animation duration to scroll |
+| `easingOption` | `EasingOptions`          | ease-in-out | Set the type of animation to scroll  |
 
-| Option         | Type            | Description                          |
-| -------------- | --------------- | ------------------------------------ |
-| `duration`     | `number`        | Set the animation duration to scroll |
-| `easingOption` | `EasingOptions` | Set the type of animation to scroll  |
+#### useWindowScroll hook
+
+**Options**
+
+| Option         | Type            | Default     | Description                          |
+| -------------- | --------------- | ----------- | ------------------------------------ |
+| `duration`     | `number`        | 300         | Set the animation duration to scroll |
+| `easingOption` | `EasingOptions` | ease-in-out | Set the type of animation to scroll  |

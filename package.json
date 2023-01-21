@@ -27,8 +27,7 @@
     "clean": "rm -rf ./dist",
     "test": "jest",
     "lint": "lint ./src/*",
-    "bump": "yarn changeset version",
-    "release": "yarn build && yarn changeset publish",
+    "release": "yarn build && yarn changeset version && yarn changeset publish",
     "changeset": "changeset"
   },
   "prettier": {

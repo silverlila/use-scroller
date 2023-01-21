@@ -27,7 +27,6 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: yarn bump
           publish:
             yarn release
             # Messages
