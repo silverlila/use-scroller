@@ -30,6 +30,22 @@ pnpm install use-scroller
 
 ## Usage
 
+### Scroll state
+
+```javascript
+import { useScroll } from 'use-scroller'
+
+export default function Carousel() {
+  const { ref, state } = useScroll<HTMLDivElement>()
+  return (
+    <>
+      {JSON.stringify(state)}
+      <Box ref={ref} />
+    </>
+  )
+}
+```
+
 ### Carousel
 
 ```javascript
@@ -86,9 +102,9 @@ export default function ScrollBox() {
 ### Scroll to target
 
 ```javascript
-import { useScroll } from 'use-scroller'
+import { useScroll } from 'use-window-scroll'
 
-export default function ScrollBox() {
+export default function App() {
   const { scrollToTarget } = useWindowScroll()
   const ref1 = useRef(null)
   const ref2 = useRef(null)
@@ -119,9 +135,7 @@ export default function ScrollBox() {
 | `useScroll`       | Handles element scroll events |
 | `useWindowScroll` | Handles window scroll events  |
 
-#### useScroll hook
-
-**Options**
+#### useScroll
 
 | Option         | Type                     | Default     | Description                          |
 | -------------- | ------------------------ | ----------- | ------------------------------------ |
@@ -130,8 +144,6 @@ export default function ScrollBox() {
 | `easingOption` | `EasingOptions`          | ease-in-out | Set the type of animation to scroll  |
 
 #### useWindowScroll hook
-
-**Options**
 
 | Option         | Type            | Default     | Description                          |
 | -------------- | --------------- | ----------- | ------------------------------------ |
