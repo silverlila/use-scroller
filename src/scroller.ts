@@ -16,7 +16,7 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
    * @param {number} to the new position to scroll.
    * @param {string} layout the scroll direction.
    */
-  function scrollTo(from: number, to: number, layout: 'horizontal' | 'vertical' = direction) {
+  function scroll(from: number, to: number, layout: 'horizontal' | 'vertical' = direction) {
     let startTime: number | null = null
     let requestId = 0
 
@@ -41,6 +41,11 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
     requestId = requestAnimationFrame(loop)
   }
 
+  function scrollTo(to: number) {
+    const from = direction === 'vertical' ? scrollTop : scrollLeft
+    scroll(from, to)
+  }
+
   function scrollToCenter() {
     let from = 0
     let to = 0
@@ -56,7 +61,7 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
       from = scrollLeft
       to = scrollXCenterPosition
     }
-    scrollTo(from, to, direction)
+    scroll(from, to, direction)
   }
 
   function scrollToTarget(target: HTMLElement) {
@@ -75,27 +80,27 @@ export function scroller({ container, options = defaultScrollOptions }: Scroller
       to = offsetLeft
     }
 
-    scrollTo(from, to, direction)
+    scroll(from, to, direction)
   }
 
   const scrollToLeft = (offset?: number) => {
     const scrollPosition = offset || scrollLeft - clientWidth
-    scrollTo(scrollLeft, scrollPosition, 'horizontal')
+    scroll(scrollLeft, scrollPosition, 'horizontal')
   }
 
   const scrollToRight = (offset?: number) => {
     const scrollPosition = offset || scrollLeft + clientWidth
-    scrollTo(scrollLeft, scrollPosition, 'horizontal')
+    scroll(scrollLeft, scrollPosition, 'horizontal')
   }
 
   const scrollToTop = (offset?: number) => {
     const scrollPosition = offset || scrollTop - clientHeight
-    scrollTo(scrollTop, scrollPosition, 'vertical')
+    scroll(scrollTop, scrollPosition, 'vertical')
   }
 
   const scrollToBottom = (offset?: number) => {
     const scrollPosition = offset || scrollTop + clientHeight
-    scrollTo(scrollTop, scrollPosition, 'vertical')
+    scroll(scrollTop, scrollPosition, 'vertical')
   }
 
   return {
