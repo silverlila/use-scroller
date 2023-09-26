@@ -1,8 +1,10 @@
 import { RefObject } from 'react'
 import { EasingFunction, EasingFunctions, EasingOptions, ScrollOptions } from './types'
 
+// Check if the code is running on the server-side.
 export const isServer = typeof window === 'undefined' || typeof document === 'undefined'
 
+// Default scroll options used if no options are provided.
 export const defaultScrollOptions: ScrollOptions = {
   direction: 'vertical',
   duration: 300,
@@ -10,37 +12,37 @@ export const defaultScrollOptions: ScrollOptions = {
 }
 
 /**
- * Resolves scroll values based on the type of param.
- * @param {HTMLElement | Window} element
+ * Resolves scroll values based on the type of element.
+ * @param {HTMLElement | Window} element - The element to retrieve scroll values from.
+ * @returns {object} - An object containing scroll-related properties.
  */
 export const resolveScrollValues = (element: HTMLElement | Window) => {
-  if (
-    element === document.body ||
-    element === document.documentElement ||
-    element instanceof Window
-  ) {
-    return {
-      scrollLeft: document.body.scrollLeft || document.documentElement.scrollLeft,
-      scrollTop: document.body.scrollTop || document.documentElement.scrollTop,
-      scrollWidth: document.body.scrollWidth || document.documentElement.scrollWidth,
-      clientWidth: document.body.clientWidth || document.documentElement.clientWidth,
-      clientHeight: document.body.clientHeight || document.documentElement.clientHeight,
-      scrollHeight: document.body.scrollHeight || document.documentElement.scrollHeight,
-    }
-  }
+  const isWindow = element instanceof Window
+  const docElement = document.documentElement
+  const docBody = document.body
+
+  const scrollLeftMax = isWindow
+    ? Math.max(docBody.scrollLeft, docElement.scrollLeft)
+    : element.scrollWidth - element.clientWidth
+  const scrollTopMax = isWindow
+    ? Math.max(docBody.scrollTop, docElement.scrollTop)
+    : element.scrollHeight - element.clientHeight
+
   return {
-    scrollLeft: element.scrollLeft,
-    scrollTop: element.scrollTop,
-    scrollWidth: element.scrollWidth,
-    clientWidth: element.clientWidth,
-    clientHeight: element.clientHeight,
-    scrollHeight: element.scrollHeight,
+    scrollLeft: isWindow ? docBody.scrollLeft || docElement.scrollLeft : element.scrollLeft,
+    scrollTop: isWindow ? docBody.scrollTop || docElement.scrollTop : element.scrollTop,
+    scrollWidth: isWindow ? docBody.scrollWidth || docElement.scrollWidth : element.scrollWidth,
+    clientWidth: isWindow ? docBody.clientWidth || docElement.clientWidth : element.clientWidth,
+    clientHeight: isWindow ? docBody.clientHeight || docElement.clientHeight : element.clientHeight,
+    scrollHeight: isWindow ? docBody.scrollHeight || docElement.scrollHeight : element.scrollHeight,
+    scrollLeftMax,
+    scrollTopMax,
   }
 }
 
 /**
- * Validate if element passed to the function is valid.
- * @param {HTMLElement | Window} element
+ * Validate if the element passed to the function is valid.
+ * @param {HTMLElement | Window} element - The element to validate.
  */
 export function validateElement(element?: HTMLElement | Window) {
   if (element === undefined) {
@@ -56,6 +58,11 @@ export function validateElement(element?: HTMLElement | Window) {
   }
 }
 
+/**
+ * Get the DOM element from a React ref object.
+ * @param {RefObject<HTMLElement>} ref - The React ref object.
+ * @returns {HTMLElement} - The DOM element.
+ */
 export const getElement = (ref: RefObject<HTMLElement>) => {
   if (!ref.current) {
     throw new Error(`Could not resolve ref object: ${ref.current}`)
@@ -63,6 +70,7 @@ export const getElement = (ref: RefObject<HTMLElement>) => {
   return ref.current
 }
 
+// Map of easing functions for scroll animations.
 export const easingMap: EasingFunctions = {
   linear(t: number) {
     return t
@@ -78,6 +86,11 @@ export const easingMap: EasingFunctions = {
   },
 }
 
+/**
+ * Get an easing function based on the provided easing option or the default option.
+ * @param {EasingOptions} easing - The easing option.
+ * @returns {EasingFunction} - The easing function.
+ */
 export const getEasing = (easing?: EasingOptions): EasingFunction => {
   const easeFunc = easingMap[easing || defaultScrollOptions.easingOption]
   if (!easeFunc) {
