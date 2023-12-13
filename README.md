@@ -147,4 +147,3 @@ This hook is tailored to handle window scroll events, making it easy to manage s
 
 - `easingOption` (Type: `EasingOptions`, Default: `ease-in-out`): Defines the type of animation to use for scrolling within the window. You can choose from various easing options to customize the scroll animation's behavior.
 
-Feel free to update and expand this documentation further based on your library's features and usage patterns.
