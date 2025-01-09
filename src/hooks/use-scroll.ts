@@ -5,17 +5,17 @@ import { defaultScrollOptions, getElement } from '../utils'
 import { useIsoMorphicEffect } from './use-iso-morphic-effect'
 
 const initialState = {
-  left: 0, // Current scroll position on the X-axis
-  top: 0, // Current scroll position on the Y-axis
-  isScrollable: false, // Determines if the container has content that can be scrolled
-  isScrolledLeft: true, // Determines if the container is at its leftmost position
-  isScrolledRight: false, // Determines if the container is at its rightmost position
-  isScrolledTop: true, // Determines if the container is at its topmost position
-  isScrolledBottom: false, // Determines if the container is at its bottommost position
-  maxScrollLeft: 0, // Maximum possible scroll on the X-axis
-  maxScrollTop: 0, // Maximum possible scroll on the Y-axis
-  scrollPercentageX: 0, // Percentage of horizontal scroll covered
-  scrollPercentageY: 0, // Percentage of vertical scroll covered
+  left: 0, 
+  top: 0, 
+  isScrollable: false, 
+  isScrolledLeft: true, 
+  isScrolledRight: false, 
+  isScrolledTop: true, 
+  isScrolledBottom: false, 
+  maxScrollLeft: 0, 
+  maxScrollTop: 0, 
+  scrollPercentageX: 0, 
+  scrollPercentageY: 0, 
 }
 
 export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>) {
@@ -28,7 +28,6 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
     const scrollContainer = ref.current
     if (!scrollContainer) return
 
-    // Create the scroller instance only once inside the effect
     if (!scrollerRef.current) {
       const container = getElement(ref)
       scrollerRef.current = createScroller(container, scrollOpt)
