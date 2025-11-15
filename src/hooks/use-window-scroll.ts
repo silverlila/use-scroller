@@ -1,10 +1,22 @@
-import { useCallback, useState } from 'react'
+'use client'
+import { useRef, useState, useMemo } from 'react'
 import { createScroller } from '../scroller'
-import { ScrollOptions } from '../types'
+import {
+  ScrollOptions,
+  EasingScrollOptions,
+  MomentumScrollOptions,
+  NativeScrollOptions,
+} from '../types'
 import { useIsoMorphicEffect } from './use-iso-morphic-effect'
-import { defaultScrollOptions, resolveScrollValues } from '../utils'
+import { resolveScrollValues } from '../browser'
+import { defaultScrollOptions } from '../constants'
 
-export function useWindowScroll(props?: Partial<Omit<ScrollOptions, 'direction'>>) {
+export type UseWindowScrollOptions =
+  | Partial<Omit<EasingScrollOptions, 'direction'>>
+  | (Partial<Omit<MomentumScrollOptions, 'animation' | 'direction'>> & { animation: 'momentum' })
+  | (Partial<Omit<NativeScrollOptions, 'animation' | 'direction'>> & { animation: 'native' })
+
+export function useWindowScroll(props?: UseWindowScrollOptions) {
   const [state, setState] = useState(() => ({
     left: 0,
     top: 0,
@@ -12,62 +24,57 @@ export function useWindowScroll(props?: Partial<Omit<ScrollOptions, 'direction'>
     isScrolledBottom: false,
   }))
 
-  const container = window
-  const scrollOptions = { ...defaultScrollOptions, ...props }
+  const propsJson = JSON.stringify(props)
+  const scrollOptions = useMemo(() => {
+    if (!props) return defaultScrollOptions
 
-  const scrollContainer = createScroller(container, scrollOptions)
+    return { ...defaultScrollOptions, ...props, direction: 'vertical' } as ScrollOptions
+  }, [propsJson])
 
-  const handleScroll = useCallback(() => {
-    const { scrollLeft, scrollTop, clientHeight, scrollHeight } = resolveScrollValues(container)
-
-    const isAtTopBoundary = scrollTop === 0
-    const isAtBottomBoundary = scrollTop >= scrollHeight - clientHeight
-
-    const scrollState = {
-      left: scrollLeft,
-      top: scrollTop,
-      isScrolledTop: isAtTopBoundary,
-      isScrolledBottom: isAtBottomBoundary,
-    }
-
-    setState(scrollState)
-  }, [container])
+  const scrollerRef = useRef<ReturnType<typeof createScroller> | null>(null)
 
   useIsoMorphicEffect(() => {
-    handleScroll()
-    container.addEventListener('scroll', handleScroll)
-    return () => {
-      container.removeEventListener('scroll', handleScroll)
+    scrollerRef.current = createScroller(window, scrollOptions)
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollTop, clientHeight, scrollHeight } = resolveScrollValues(window)
+
+      const isAtTopBoundary = scrollTop === 0
+      const isAtBottomBoundary = scrollTop >= scrollHeight - clientHeight
+
+      const scrollState = {
+        left: scrollLeft,
+        top: scrollTop,
+        isScrolledTop: isAtTopBoundary,
+        isScrolledBottom: isAtBottomBoundary,
+      }
+
+      setState(scrollState)
     }
-  }, [handleScroll])
 
-  const scrollTo = useCallback(
-    (position: number) => {
-      scrollContainer.scrollTo(position)
-    },
-    [scrollContainer]
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [scrollOptions])
+
+  const methods = useMemo(
+    () => ({
+      scrollTo: (position: number) => scrollerRef.current?.scrollTo(position),
+      scrollToTarget: (currentTarget: HTMLElement | null) => {
+        if (currentTarget === null) return
+        scrollerRef.current?.scrollToTarget(currentTarget)
+      },
+      scrollTop: (offset?: number) => scrollerRef.current?.scrollToTop(offset),
+      scrollBottom: (offset?: number) => scrollerRef.current?.scrollToBottom(offset),
+      cancelScroll: () => scrollerRef.current?.cancelScroll(),
+    }),
+    []
   )
 
-  const scrollToTarget = useCallback(
-    (currentTarget: HTMLElement) => {
-      scrollContainer.scrollToTarget(currentTarget)
-    },
-    [scrollContainer]
-  )
-
-  const scrollTop = useCallback(
-    (offset?: number | undefined) => {
-      scrollContainer.scrollToTop(offset)
-    },
-    [scrollContainer]
-  )
-
-  const scrollBottom = useCallback(
-    (offset?: number | undefined) => {
-      scrollContainer.scrollToBottom(offset)
-    },
-    [scrollContainer]
-  )
-
-  return { state, scrollTop, scrollBottom, scrollToTarget, scrollTo }
+  return {
+    state,
+    ...methods,
+  }
 }

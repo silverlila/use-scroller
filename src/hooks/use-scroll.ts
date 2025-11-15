@@ -1,26 +1,50 @@
-import { useRef, useState } from 'react'
+'use client'
+
+import { useRef, useState, useMemo } from 'react'
 import { createScroller } from '../scroller'
-import { ScrollOptions } from '../types'
-import { defaultScrollOptions, getElement } from '../utils'
+import {
+  ScrollOptions,
+  EasingScrollOptions,
+  MomentumScrollOptions,
+  NativeScrollOptions,
+} from '../types'
+import { getElement } from '../utils'
 import { useIsoMorphicEffect } from './use-iso-morphic-effect'
+import { defaultScrollOptions } from '../constants'
+
+/**
+ * Hook accepts partial scroll options - all properties are optional except 'animation' discriminant
+ * This allows users to override specific properties while keeping defaults
+ */
+export type UseScrollOptions =
+  | Partial<EasingScrollOptions>
+  | (Partial<Omit<MomentumScrollOptions, 'animation'>> & { animation: 'momentum' })
+  | (Partial<Omit<NativeScrollOptions, 'animation'>> & { animation: 'native' })
 
 const initialState = {
-  left: 0, 
-  top: 0, 
-  isScrollable: false, 
-  isScrolledLeft: true, 
-  isScrolledRight: false, 
-  isScrolledTop: true, 
-  isScrolledBottom: false, 
-  maxScrollLeft: 0, 
-  maxScrollTop: 0, 
-  scrollPercentageX: 0, 
-  scrollPercentageY: 0, 
+  left: 0,
+  top: 0,
+  isScrollable: false,
+  isScrolledLeft: true,
+  isScrolledRight: false,
+  isScrolledTop: true,
+  isScrolledBottom: false,
+  maxScrollLeft: 0,
+  maxScrollTop: 0,
+  scrollPercentageX: 0,
+  scrollPercentageY: 0,
 }
 
-export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>) {
+export function useScroll<T extends HTMLElement = HTMLDivElement>(props?: UseScrollOptions) {
   const ref = useRef<T>(null)
-  const scrollOpt = { ...defaultScrollOptions, ...props }
+
+  const propsJson = JSON.stringify(props)
+  const scrollOpt = useMemo(() => {
+    if (!props) return defaultScrollOptions
+
+    return { ...defaultScrollOptions, ...props } as ScrollOptions
+  }, [propsJson])
+
   const scrollerRef = useRef<ReturnType<typeof createScroller> | null>(null)
   const [state, setState] = useState(() => initialState)
 
@@ -28,10 +52,8 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
     const scrollContainer = ref.current
     if (!scrollContainer) return
 
-    if (!scrollerRef.current) {
-      const container = getElement(ref)
-      scrollerRef.current = createScroller(container, scrollOpt)
-    }
+    const container = getElement(ref)
+    scrollerRef.current = createScroller(container, scrollOpt)
 
     const { scrollWidth, clientWidth, clientHeight, scrollHeight } = scrollContainer
     const isScrollable = clientWidth !== scrollWidth || clientHeight !== scrollHeight
@@ -45,7 +67,6 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
         const isAtTopBoundary = scrollTop === 0
         const isAtBottomBoundary = scrollTop >= scrollHeight - clientHeight
         const scrollState = {
-          ...state,
           isScrolledLeft: isAtLeftBoundary,
           isScrolledRight: isAtRightBoundary,
           isScrolledTop: isAtTopBoundary,
@@ -61,23 +82,31 @@ export function useScroll<T extends HTMLElement>(props?: Partial<ScrollOptions>)
             ? 0
             : (scrollTop / (scrollHeight - clientHeight)) * 100,
         }
-        setState(scrollState)
+        setState((prevState) => ({ ...prevState, ...scrollState }))
       }
     }
 
     handleScroll()
     scrollContainer?.addEventListener('scroll', handleScroll)
     return () => scrollContainer?.removeEventListener('scroll', handleScroll)
-  }, [state])
+  }, [scrollOpt])
+
+  const methods = useMemo(
+    () => ({
+      scrollLeft: (offset?: number) => scrollerRef.current?.scrollToLeft(offset),
+      scrollRight: (offset?: number) => scrollerRef.current?.scrollToRight(offset),
+      scrollTop: (offset?: number) => scrollerRef.current?.scrollToTop(offset),
+      scrollBottom: (offset?: number) => scrollerRef.current?.scrollToBottom(offset),
+      scrollCenter: () => scrollerRef.current?.scrollToCenter(),
+      scrollTo: (position: number) => scrollerRef.current?.scrollTo(position),
+      cancelScroll: () => scrollerRef.current?.cancelScroll(),
+    }),
+    []
+  )
 
   return {
     ref,
     state,
-    scrollLeft: scrollerRef.current?.scrollToLeft,
-    scrollRight: scrollerRef.current?.scrollToRight,
-    scrollBottom: scrollerRef.current?.scrollToBottom,
-    scrollTop: scrollerRef.current?.scrollToTop,
-    scrollCenter: scrollerRef.current?.scrollToCenter,
-    scrollTo: scrollerRef.current?.scrollTo,
+    ...methods,
   }
 }
