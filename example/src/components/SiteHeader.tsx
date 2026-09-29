@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
-import { useScroll, useScrollSpy, useWindowScroll } from 'use-scroller'
+import { useScroll, useScrollSpy } from 'use-scroller'
 
 interface Section {
   id: string
@@ -15,8 +15,9 @@ export function SiteHeader({ sections }: { sections: Section[] }) {
     sections.map((section) => section.id),
     { offset }
   )
-  const page = useWindowScroll()
-  const { ref: nav, scrollToElement } = useScroll<HTMLElement>()
+  const page = useScroll('window')
+  const nav = useRef<HTMLElement>(null)
+  const { scrollToElement } = useScroll(nav)
 
   useEffect(() => {
     const link = nav.current?.querySelector<HTMLElement>('[aria-current="true"]')

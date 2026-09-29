@@ -1,5 +1,6 @@
 import { useMemo, useState, useSyncExternalStore } from 'react'
-import { initialScrollState, observeScroll, type ScrollState } from '../core'
+import { observeScroll, type ScrollState } from '../core'
+import { initialScrollState } from '../core/observe-scroll'
 import { useElementEffect, type ElementTarget } from './use-element-effect'
 
 export function useScrollState(target: ElementTarget): ScrollState

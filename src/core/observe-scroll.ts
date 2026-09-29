@@ -191,8 +191,17 @@ function watchElementSize(element: HTMLElement, onResize: () => void): () => voi
   const resizeObserver = new ResizeObserver(onResize)
   resizeObserver.observe(element)
   for (const child of element.children) resizeObserver.observe(child)
+  // Text directly inside the element has no box for the ResizeObserver, so its edits are watched
+  // here. Deeper changes resize a child element, which the ResizeObserver already reports.
   const mutationObserver = new MutationObserver((records) => {
+    let changed = false
     for (const record of records) {
+      if (record.type === 'characterData') {
+        if (record.target.parentNode === element) changed = true
+        continue
+      }
+      if (record.target !== element) continue
+      changed = true
       for (const node of record.addedNodes) {
         if (node instanceof Element) resizeObserver.observe(node)
       }
@@ -200,9 +209,9 @@ function watchElementSize(element: HTMLElement, onResize: () => void): () => voi
         if (node instanceof Element) resizeObserver.unobserve(node)
       }
     }
-    onResize()
+    if (changed) onResize()
   })
-  mutationObserver.observe(element, { childList: true })
+  mutationObserver.observe(element, { childList: true, subtree: true, characterData: true })
   return () => {
     resizeObserver.disconnect()
     mutationObserver.disconnect()

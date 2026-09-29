@@ -1,9 +1,8 @@
-import { createRef, type RefObject } from 'react'
+import { createRef, useRef } from 'react'
 import { describe, expect, onTestFinished, test } from 'vitest'
 import { render } from 'vitest-browser-react'
 import {
   useScroll,
-  useWindowScroll,
   type AnimateScrollOptions,
   type ScrollActions,
   type ScrollAnimation,
@@ -14,8 +13,6 @@ import { mountPage, nextFrame } from '../helpers/dom'
 const instant: ScrollAnimation = { type: 'instant' }
 const quick: ScrollAnimation = { type: 'tween', duration: 60 }
 const heldAtHalfway: ScrollAnimation = { type: 'tween', duration: 60_000, easing: () => 0.5 }
-
-type BoxActions = ScrollActions & { ref: RefObject<HTMLDivElement | null> }
 
 function recorder<T>() {
   const values: T[] = []
@@ -30,17 +27,19 @@ function ScrollBox({
   options,
   onActions,
   showBox = true,
+  scrollWindow = false,
 }: {
   options?: AnimateScrollOptions
-  onActions: (actions: BoxActions) => void
+  onActions: (actions: ScrollActions) => void
   showBox?: boolean
+  scrollWindow?: boolean
 }) {
-  const actions = useScroll(options)
-  onActions(actions)
+  const ref = useRef<HTMLDivElement>(null)
+  onActions(useScroll(scrollWindow ? 'window' : ref, options))
   if (!showBox) return null
   return (
     <div
-      ref={actions.ref}
+      ref={ref}
       aria-label="box"
       style={{ width: 200, height: 100, overflow: 'auto', scrollbarWidth: 'none' }}
     >
@@ -52,7 +51,7 @@ function ScrollBox({
 }
 
 async function renderBox(props: { options?: AnimateScrollOptions; showBox?: boolean } = {}) {
-  const { record, latest, values } = recorder<BoxActions>()
+  const { record, latest, values } = recorder<ScrollActions>()
   const screen = await render(<ScrollBox {...props} onActions={record} />)
   const box = () => screen.getByLabelText('box').element()
   return { screen, box, latest, values, record }
@@ -141,8 +140,23 @@ describe('useScroll', () => {
       expect(later.scrollToEdge).toBe(first.scrollToEdge)
       expect(later.scrollToElement).toBe(first.scrollToElement)
       expect(later.cancel).toBe(first.cancel)
-      expect(later.ref).toBe(first.ref)
     }
+  })
+
+  test('actions act on the target from the latest render', async () => {
+    mountPage({ width: 100, height: 3000 })
+    const { screen, box, latest, values, record } = await renderBox({
+      options: { animation: instant },
+    })
+
+    await screen.rerender(
+      <ScrollBox scrollWindow options={{ animation: instant }} onActions={record} />
+    )
+    latest().scrollTo({ y: 200 })
+
+    expect(window.scrollY).toBe(200)
+    expect(box().scrollTop).toBe(0)
+    expect(latest()).toBe(values[0])
   })
 
   test('cancel stops the running animation on the element', async () => {
@@ -198,9 +212,9 @@ describe('useScroll', () => {
   })
 })
 
-describe('useWindowScroll', () => {
+describe("useScroll('window')", () => {
   function WindowScroller({ onActions }: { onActions: (actions: ScrollActions) => void }) {
-    onActions(useWindowScroll({ animation: quick }))
+    onActions(useScroll('window', { animation: quick }))
     return null
   }
 

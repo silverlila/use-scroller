@@ -2,7 +2,8 @@ import { StrictMode, useRef, type RefObject } from 'react'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, test } from 'vitest'
 import { render } from 'vitest-browser-react'
-import { initialScrollState, useScrollState, type ScrollState } from '../../src/react'
+import { initialScrollState } from '../../src/core/observe-scroll'
+import { useScrollState, type ScrollState } from '../../src/react'
 import { mountPage, nextFrame } from '../helpers/dom'
 
 const viewport = { width: 200, height: 100, overflow: 'auto', scrollbarWidth: 'none' } as const

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type RefObject } from 'react'
+import { useRef, useState, type RefObject } from 'react'
 import {
   animateScroll,
   cancelScroll,
@@ -25,33 +25,18 @@ export interface ScrollActions {
   cancel(): void
 }
 
-export function useScroll<T extends HTMLElement = HTMLDivElement>(
-  options?: AnimateScrollOptions
-): ScrollActions & { ref: RefObject<T | null> } {
-  const ref = useRef<T>(null)
-  const actions = useScrollActions(ref, options)
-  return useMemo(() => ({ ...actions, ref }), [actions])
-}
-
-export function useWindowScroll(options?: AnimateScrollOptions): ScrollActions {
-  return useScrollActions('window', options)
-}
-
-function useScrollActions(
-  target: ElementTarget,
-  options: AnimateScrollOptions | undefined
-): ScrollActions {
-  const defaults = useRef(options)
+export function useScroll(target: ElementTarget, options?: AnimateScrollOptions): ScrollActions {
+  const latest = useRef({ target, options })
   const lastStarted = useRef<ScrollHandle | null>(null)
 
   useIsomorphicLayoutEffect(() => {
-    defaults.current = options
+    latest.current = { target, options }
   })
   useIsomorphicLayoutEffect(() => () => lastStarted.current?.cancel(), [])
 
   const [actions] = useState((): ScrollActions => {
     function attachedTarget(): ScrollTarget {
-      const resolved = resolveTarget(target)
+      const resolved = resolveTarget(latest.current.target)
       if (!resolved) throw new Error('useScroll: ref is not attached to an element')
       return resolved
     }
@@ -61,22 +46,20 @@ function useScrollActions(
       return handle
     }
 
+    function withDefaults<T extends AnimateScrollOptions>(perCall: T | undefined) {
+      return { ...latest.current.options, ...perCall }
+    }
+
     return {
       scrollTo: (position, perCall) =>
-        track(animateScroll(attachedTarget(), position, { ...defaults.current, ...perCall })),
-      scrollBy: (delta, perCall) =>
-        track(scrollBy(attachedTarget(), delta, { ...defaults.current, ...perCall })),
+        track(animateScroll(attachedTarget(), position, withDefaults(perCall))),
+      scrollBy: (delta, perCall) => track(scrollBy(attachedTarget(), delta, withDefaults(perCall))),
       scrollToEdge: (edge, perCall) =>
-        track(scrollToEdge(attachedTarget(), edge, { ...defaults.current, ...perCall })),
+        track(scrollToEdge(attachedTarget(), edge, withDefaults(perCall))),
       scrollToElement: (element, perCall) =>
-        track(
-          scrollToElement(attachedTarget(), attachedElement(element), {
-            ...defaults.current,
-            ...perCall,
-          })
-        ),
+        track(scrollToElement(attachedTarget(), attachedElement(element), withDefaults(perCall))),
       cancel() {
-        const resolved = resolveTarget(target)
+        const resolved = resolveTarget(latest.current.target)
         if (resolved) cancelScroll(resolved)
       },
     }

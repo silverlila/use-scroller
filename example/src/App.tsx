@@ -1,7 +1,9 @@
 import type { ComponentType } from 'react'
+import { ChatDemo } from './components/ChatDemo'
 import { InViewDemo } from './components/InViewDemo'
 import { NestedScrollDemo } from './components/NestedScrollDemo'
 import { ProgrammaticDemo } from './components/ProgrammaticDemo'
+import { RestoreDemo } from './components/RestoreDemo'
 import { ScrollLockDemo } from './components/ScrollLockDemo'
 import { ScrollStateDemo } from './components/ScrollStateDemo'
 import { SiteHeader } from './components/SiteHeader'
@@ -61,6 +63,24 @@ const DEMOS: Demo[] = [
       'useScrollState with selectors: the progress bar re-renders on every scroll, the buttons only when an edge is reached or left.',
     tryThis: 'Scroll the row and watch the buttons disable at each end.',
     Component: ScrollStateDemo,
+  },
+  {
+    id: 'chat',
+    label: 'Chat',
+    title: 'Stick to bottom',
+    description:
+      'useStickToBottom keeps a chat or log pinned to its newest line, including a reply that grows word by word. Scroll up and it stops following until you come back to the bottom.',
+    tryThis: 'Scroll up while messages arrive, then tap New messages.',
+    Component: ChatDemo,
+  },
+  {
+    id: 'restore',
+    label: 'Restore',
+    title: 'Scroll restoration',
+    description:
+      'useScrollRestoration saves the list position in sessionStorage and puts it back after a reload, waiting for the content if it renders late.',
+    tryThis: 'Scroll the list, reload the page, and the position comes back.',
+    Component: RestoreDemo,
   },
   {
     id: 'in-view',

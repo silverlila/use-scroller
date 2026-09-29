@@ -1,11 +1,5 @@
-export { EDGE_TOLERANCE, type Axis, type ScrollTarget } from './types'
-export {
-  findScrollParent,
-  isScrollable,
-  readScroll,
-  writeScroll,
-  type ScrollMetrics,
-} from './geometry'
+export type { Axis, ScrollTarget } from './types'
+export { findScrollParent, isScrollable, readScroll, type ScrollMetrics } from './geometry'
 export { cubicBezier, easings, type Easing } from './easings'
 export {
   animateScroll,
@@ -16,11 +10,10 @@ export {
   type ScrollHandle,
   type ScrollResult,
 } from './animate-scroll'
-export { initialScrollState, observeScroll, type ScrollState } from './observe-scroll'
+export { observeScroll, type ScrollState } from './observe-scroll'
 export { lockScroll } from './lock-scroll'
-export { pickSnapTarget, readSnapPositions } from './snap'
 export { dragScroll, type DragScrollOptions } from './drag-scroll'
-export { observeActiveSection, pickActiveSection } from './active-section'
+export { observeActiveSection } from './active-section'
 export {
   scrollBy,
   scrollToEdge,
@@ -29,3 +22,5 @@ export {
   type ScrollAlign,
   type ScrollToElementOptions,
 } from './scroll-to'
+export { restoreScroll, type RestoreScrollOptions } from './restore-scroll'
+export { stickToBottom, type StickToBottom } from './stick-to-bottom'

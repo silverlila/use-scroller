@@ -25,7 +25,8 @@ const buttonClass =
 export function ProgrammaticDemo() {
   const [kind, setKind] = useState<AnimationKind>('tween')
   const [result, setResult] = useState<ScrollResult | 'running' | null>(null)
-  const { ref, scrollToEdge, scrollToElement, scrollBy } = useScroll<HTMLOListElement>({
+  const ref = useRef<HTMLOListElement>(null)
+  const { scrollToEdge, scrollToElement, scrollBy } = useScroll(ref, {
     animation: ANIMATIONS[kind],
   })
   const atBottom = useScrollState(ref, (state) => state.atBottom)

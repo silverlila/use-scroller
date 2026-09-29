@@ -1,11 +1,7 @@
 import { describe, expect, onTestFinished, test, vi } from 'vitest'
 import { page } from 'vitest/browser'
-import {
-  observeActiveSection,
-  pickActiveSection,
-  scrollToElement,
-  type ScrollTarget,
-} from '../../src/core'
+import { observeActiveSection, scrollToElement, type ScrollTarget } from '../../src/core'
+import { pickActiveSection } from '../../src/core/active-section'
 import { createBox, mount, mountPage, nextFrame } from '../helpers/dom'
 
 describe('pickActiveSection', () => {

@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import { useRef, type RefObject } from 'react'
 import { useScroll, useScrollState, type ScrollState } from 'use-scroller'
 import { DESTINATIONS } from '../data'
 
@@ -12,7 +12,8 @@ const arrowClass =
 type Target = RefObject<HTMLElement | null>
 
 export function ScrollStateDemo() {
-  const { ref, scrollBy } = useScroll()
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollBy } = useScroll(ref)
 
   function page(direction: -1 | 1) {
     const width = ref.current?.clientWidth ?? 0

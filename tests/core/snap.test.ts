@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { pickSnapTarget, readSnapPositions } from '../../src/core'
+import { pickSnapTarget, readSnapPositions } from '../../src/core/snap'
 import { createBox, mount } from '../helpers/dom'
 
 // Five 150px items in a 200px track: they start at 0, 150, 300, 450 and 600, and the range ends at 550.

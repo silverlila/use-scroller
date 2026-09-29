@@ -187,6 +187,24 @@ describe('observeScroll', () => {
     await vi.waitFor(() => expect(latest().maxY).toBe(300))
   })
 
+  test('re-emits when a text node directly inside the container grows in place', async () => {
+    const scroller = mount(
+      createBox(
+        { width: 200, height: 100 },
+        { overflow: 'auto', scrollbarWidth: 'none', whiteSpace: 'pre', lineHeight: '20px' }
+      )
+    )
+    const text = document.createTextNode('line\n'.repeat(10))
+    scroller.append(text)
+    const { latest } = recordStates(scroller)
+    expect(latest().maxY).toBe(100)
+    await waitFrames(3)
+
+    text.data += 'line\n'.repeat(5)
+
+    await vi.waitFor(() => expect(latest().maxY).toBe(200))
+  })
+
   test('re-emits when the content it started with is resized', async () => {
     const scroller = mountScroller()
     const { latest } = recordStates(scroller)

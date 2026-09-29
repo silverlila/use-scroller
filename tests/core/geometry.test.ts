@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { page } from 'vitest/browser'
-import { findScrollParent, isScrollable, readScroll, writeScroll } from '../../src/core'
+import { findScrollParent, isScrollable, readScroll } from '../../src/core'
+import { writeScroll } from '../../src/core/geometry'
 import { createBox, createScroller, mount, mountPage } from '../helpers/dom'
 
 describe('readScroll', () => {
