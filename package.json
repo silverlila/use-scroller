@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/silvi97lila/use-scroller.git"
+    "url": "git+https://github.com/silverlila/use-scroller.git"
   },
   "scripts": {
     "build": "tsup",

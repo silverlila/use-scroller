@@ -7,18 +7,23 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v3
+      - name: Setup Node.js 24.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: 24.x
 
       - name: Install Dependencies
         run: yarn --frozen-lockfile
@@ -27,11 +32,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish:
-            yarn release
-            # Messages
+          publish: yarn release
           commit: 'chore(deploy): Release'
           title: 'chore(deploy): Release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
