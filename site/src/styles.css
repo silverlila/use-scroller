@@ -202,10 +202,6 @@ ul {
   font-weight: 600;
 }
 
-.titlebar-dim {
-  color: var(--ink-3);
-}
-
 .titlebar-mark {
   position: relative;
   width: 18px;
@@ -236,15 +232,6 @@ ul {
   width: 1px;
 }
 
-.titlebar-meta {
-  display: flex;
-  gap: 18px;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 11.5px;
-}
-
 .titlebar-links {
   display: flex;
   gap: 4px;
@@ -262,12 +249,6 @@ ul {
 .titlebar-links a:hover {
   border-color: var(--ink-2);
   background: var(--sheet-hi);
-}
-
-@media (max-width: 899px) {
-  .titlebar-meta {
-    display: none;
-  }
 }
 
 /* ─────────────────────────── sections ─────────────────────────── */
