@@ -29,10 +29,10 @@ const DEMOS: Demo[] = [
   {
     id: 'nested-scroll',
     label: 'Nested scroll',
-    title: 'Nested scrollers that hand off',
+    title: 'Nested scrollers that stay put',
     description:
-      'When an inner list reaches its end mid-gesture, the browser keeps the gesture latched to the list and the rest of the swipe is lost. useScrollHandoff passes the remainder to the page.',
-    tryThis: 'Flick a list to its end and keep your finger moving in one motion.',
+      'Natively, scrolling past the end of an inner list can start scrolling the page. With overscroll-behavior: contain, a scroll that starts in the list stays in the list; start outside it to scroll the page. No JavaScript needed.',
+    tryThis: 'Scroll a list to its end, then keep scrolling in a new gesture.',
     Component: NestedScrollDemo,
   },
   {

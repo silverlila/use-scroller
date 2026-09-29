@@ -7,9 +7,6 @@ library steps in only where the platform falls short.
 
 - **Swipe tracks that drift.** On a phone, a slightly diagonal swipe on a horizontal carousel can
   move the page, the carousel, or both. `dragScroll` decides once per gesture and sticks to one axis.
-- **Nested scrollers that get stuck.** When an inner list hits its end mid-gesture, the browser keeps
-  the gesture latched to the list and the rest of the swipe is lost. `scrollHandoff` passes the
-  remainder to the parent.
 - **Modal scroll bleed on iOS.** `overflow: hidden` on the page doesn't stop iOS Safari from
   scrolling it behind a modal. `lockScroll` adds a touch guard designed for iOS Safari (verify on a
   device) and keeps the modal's own list scrollable.
@@ -109,18 +106,6 @@ browser. Release continues with momentum and lands on a CSS scroll-snap position
 any. A drag doesn't fire a click on whatever is under the finger. Wheel, trackpad, keyboard and the scrollbar stay
 native. `mouse: true` also lets a mouse drag the track.
 
-### `useScrollHandoff`
-
-Lets a nested scroller hand the rest of a gesture to its parent at its edge.
-
-```tsx
-const list = useRef<HTMLUListElement>(null)
-useScrollHandoff(list) // { axis: 'y', parent: nearest scrollable ancestor or window }
-```
-
-Works for wheel and touch. On release after a handoff the parent continues with momentum; reversing
-direction winds the parent back before the list scrolls again.
-
 ### `useScrollLock`
 
 Locks page scrolling while `active` is true. Elements in `allow` stay scrollable and never chain to
@@ -207,11 +192,10 @@ Emits a `ScrollState` once on subscribe, then at most once per frame when someth
 including when the content or container resizes. `isScrolling` turns false after `idleDelay` ms
 without scroll events.
 
-### `dragScroll`, `scrollHandoff`, `lockScroll`
+### `dragScroll`, `lockScroll`
 
 ```ts
 const stopDrag = dragScroll(track, { axis: 'x', mouse: false })
-const stopHandoff = scrollHandoff(list, { axis: 'y', parent: window })
 const unlock = lockScroll({ allow: [modalList] })
 ```
 
@@ -245,31 +229,28 @@ positions that never hit an edge exactly.
 
 Several scroll problems need no JavaScript. Reach for these before the library.
 
-| Problem                                                       | CSS                                                          | When you still need use-scroller                                                                        |
-| ------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| A modal or sidebar list scrolls the page when it hits its end | `overscroll-behavior: contain` on the list                   | The page must not move at all behind a modal on iOS, including when touching the backdrop: `lockScroll` |
-| Diagonal swipes on a carousel move the page                   | `touch-action: pan-x pinch-zoom` on the track                | You also want vertical swipes on the track to scroll the page: `dragScroll`                             |
-| Carousel should stop on cards                                 | `scroll-snap-type: x mandatory` + `scroll-snap-align: start` | Only when you also need axis locking or mouse dragging; `dragScroll` lands on the same snap points      |
-| Layout jumps when content starts or stops overflowing         | `scrollbar-gutter: stable` on the scroll container           | Never for this                                                                                          |
-| Anchor links hide under a sticky header                       | `scroll-margin-top` on the targets                           | You need to control duration or easing, or stop when the user scrolls: `scrollToElement` with `offset`  |
+| Problem                                               | CSS                                                          | When you still need use-scroller                                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| A nested list scrolls the page when it hits its end   | `overscroll-behavior: contain` on the list                   | The page must not move at all behind a modal on iOS, including when touching the backdrop: `lockScroll` |
+| Diagonal swipes on a carousel move the page           | `touch-action: pan-x pinch-zoom` on the track                | You also want vertical swipes on the track to scroll the page: `dragScroll`                             |
+| Carousel should stop on cards                         | `scroll-snap-type: x mandatory` + `scroll-snap-align: start` | Only when you also need axis locking or mouse dragging; `dragScroll` lands on the same snap points      |
+| Layout jumps when content starts or stops overflowing | `scrollbar-gutter: stable` on the scroll container           | Never for this                                                                                          |
+| Anchor links hide under a sticky header               | `scroll-margin-top` on the targets                           | You need to control duration or easing, or stop when the user scrolls: `scrollToElement` with `offset`  |
 
 ## Known limitations
 
-- `scrollHandoff` sets `overscroll-behavior: none` on the inner element along its axis. Native
-  chaining past the one parent it drives is cut, so a gesture won't continue into a grandparent.
-- `scrollHandoff` doesn't consider a same-axis scroller nested inside the inner element.
 - Scroll spy highlights the last section once the root is scrolled to the end, even if a short last
   section never reached the reading line.
 - Hooks that take a ref pick up its element on the commit that attaches it. An element attached in a
   later commit that doesn't re-render the hook's component goes unnoticed until that component renders.
 - `dragScroll` assumes `writing-mode: horizontal-tb`.
-- Release momentum after a drag or handoff ignores `prefers-reduced-motion`, as native momentum does.
+- Release momentum after a drag ignores `prefers-reduced-motion`, as native momentum does.
   Programmatic scrolls (`animateScroll` and everything built on it) respect it.
 
 ## Browser support
 
-Automated tests run in headless Chromium. The gesture features (`dragScroll`,
-`scrollHandoff`, the iOS part of `lockScroll`) still need verification on real iOS Safari and
+Automated tests run in headless Chromium. The gesture features (`dragScroll`
+and the iOS part of `lockScroll`) still need verification on real iOS Safari and
 Android devices.
 
 ## Migrating from v1

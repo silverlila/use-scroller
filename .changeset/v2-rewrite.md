@@ -8,7 +8,6 @@ the migration table in the README.
 
 - New framework-free entry `use-scroller/core`; `use-scroller` adds React hooks on top. React is now an optional peer dependency (18 or 19). ESM and CommonJS builds.
 - `dragScroll` / `useDragScroll`: axis-locked swipe tracks with momentum and scroll-snap support.
-- `scrollHandoff` / `useScrollHandoff`: nested scrollers hand the rest of a gesture to their parent instead of getting stuck at the edge.
 - `lockScroll` / `useScrollLock`: reference-counted page scroll lock with scrollable allow-listed elements and a touch guard designed for iOS Safari.
 - `animateScroll`, `scrollToEdge`, `scrollToElement`, `scrollBy`: tween, spring or instant; interrupted by user input; pauses scroll snapping while running; respects reduced motion.
 - `observeScroll` / `useScrollState`: edges, progress, direction, velocity and `isScrolling`, correct in RTL, with selectors to limit re-renders.

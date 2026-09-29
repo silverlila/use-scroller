@@ -92,37 +92,6 @@ export function mouse() {
   }
 }
 
-export function wheel() {
-  const time = clock()
-  return {
-    async scroll(point: Point, delta: { dx?: number; dy?: number }) {
-      await cdp().send('Input.dispatchMouseEvent', {
-        type: 'mouseWheel',
-        ...toMainFrame(point),
-        deltaX: delta.dx ?? 0,
-        deltaY: delta.dy ?? 0,
-        timestamp: time.tick(),
-      })
-      await nextFrame()
-    },
-    // One continuous gesture with began/changed/ended phases, like a trackpad swipe, so the
-    // browser latches it to one scroller. Without the mouse move first, a swipe that followed a
-    // wheel step in an earlier test sometimes stopped scrolling after a couple of events.
-    async swipe(point: Point, delta: { dx?: number; dy?: number }) {
-      await cdp().send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...toMainFrame(point) })
-      await cdp().send('Input.synthesizeScrollGesture', {
-        ...toMainFrame(point),
-        xDistance: -(delta.dx ?? 0),
-        yDistance: -(delta.dy ?? 0),
-        gestureSourceType: 'mouse',
-        speed: 1200,
-      })
-      await nextFrame()
-    },
-    pause: time.pause,
-  }
-}
-
 export function pointIn(element: Element, offset: Point): Point {
   const box = element.getBoundingClientRect()
   return { x: box.left + offset.x, y: box.top + offset.y }

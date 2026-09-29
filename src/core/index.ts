@@ -20,7 +20,6 @@ export { initialScrollState, observeScroll, type ScrollState } from './observe-s
 export { lockScroll } from './lock-scroll'
 export { pickSnapTarget, readSnapPositions } from './snap'
 export { dragScroll, type DragScrollOptions } from './drag-scroll'
-export { scrollHandoff, type ScrollHandoffOptions } from './scroll-handoff'
 export { observeActiveSection, pickActiveSection } from './active-section'
 export {
   scrollBy,
