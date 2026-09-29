@@ -1,0 +1,15 @@
+/* Syntax colors for sugar-high on the dark code panels. The only hues on the page. */
+.code-block {
+  --sh-keyword: #f47067;
+  --sh-string: #8ddb8c;
+  --sh-class: #f69d50;
+  --sh-entity: #dcbdfb;
+  --sh-property: #6cb6ff;
+  --sh-identifier: #e6e6e6;
+  --sh-jsxliterals: #d6d6d6;
+  --sh-sign: #9c9c9c;
+  --sh-comment: #8b8b8b;
+}
+.code-block .sh__token--comment {
+  font-style: italic;
+}

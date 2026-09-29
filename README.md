@@ -431,11 +431,12 @@ names its axis, and the package is ESM-only.
 | `createEasingAnimation`, `createMomentumAnimation`                       | Removed. Use `animateScroll`                                                                                  |
 | Types `ScrollOptions`, `EasingOptions`, `UseScrollReturn`                | `AnimateScrollOptions`, `ScrollAnimation`, `Easing`, `ScrollActions`, `ScrollState`                           |
 
-## Example app
+## Demo site
 
-`example/` has a demo of every feature, with native and enhanced versions side by side for the touch
-ones. Run `npm install && npm run dev` inside it; the dev server listens on your LAN so you can open
-it on a phone.
+[silverlila.github.io/use-scroller](https://silverlila.github.io/use-scroller/) walks through every
+export with its code and a live demo. The source is in `site/`: run `yarn` at the root, then
+`npm install && npm run dev` inside `site/`; the dev server listens on your LAN so you can open it on
+a phone.
 
 ## License
 
