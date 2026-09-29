@@ -7,6 +7,8 @@
 # testing
 /coverage
 /packages/**/coverage
+__screenshots__/
+.vitest-attachments/
 
 # logs
 *.log
@@ -44,3 +46,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# local notes
+ROADMAP.md

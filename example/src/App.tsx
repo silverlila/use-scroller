@@ -1,94 +1,121 @@
-import MomentumDemo from './components/MomentumDemo'
-import EasingDemo from './components/EasingDemo'
-import VerticalScrollDemo from './components/VerticalScrollDemo'
-import ImageGallery from './components/ImageGallery'
-import WindowScrollDemo from './components/WindowScrollDemo'
+import type { ComponentType } from 'react'
+import { InViewDemo } from './components/InViewDemo'
+import { NestedScrollDemo } from './components/NestedScrollDemo'
+import { ProgrammaticDemo } from './components/ProgrammaticDemo'
+import { ScrollLockDemo } from './components/ScrollLockDemo'
+import { ScrollStateDemo } from './components/ScrollStateDemo'
+import { SiteHeader } from './components/SiteHeader'
+import { SwipeTrackDemo } from './components/SwipeTrackDemo'
 
-function App() {
+interface Demo {
+  id: string
+  label: string
+  title: string
+  description: string
+  tryThis: string
+  Component: ComponentType
+}
+
+const DEMOS: Demo[] = [
+  {
+    id: 'swipe-track',
+    label: 'Swipe track',
+    title: 'Swipe tracks that stay on their axis',
+    description:
+      'A horizontal carousel inside a vertical page. Natively, a slightly diagonal swipe can move the page, the track, or both. useDragScroll decides once per gesture and sticks to it.',
+    tryThis: 'On a phone, swipe each track sideways at a slight angle.',
+    Component: SwipeTrackDemo,
+  },
+  {
+    id: 'nested-scroll',
+    label: 'Nested scroll',
+    title: 'Nested scrollers that hand off',
+    description:
+      'When an inner list reaches its end mid-gesture, the browser keeps the gesture latched to the list and the rest of the swipe is lost. useScrollHandoff passes the remainder to the page.',
+    tryThis: 'Flick a list to its end and keep your finger moving in one motion.',
+    Component: NestedScrollDemo,
+  },
+  {
+    id: 'scroll-lock',
+    label: 'Scroll lock',
+    title: 'Modal scroll lock',
+    description:
+      'useScrollLock freezes the page behind a modal while the list inside it still scrolls and never chains to the page. Its touch guard is designed for iOS Safari; verify on a device.',
+    tryThis: 'Open the inbox and scroll past the end of its list.',
+    Component: ScrollLockDemo,
+  },
+  {
+    id: 'programmatic',
+    label: 'Programmatic',
+    title: 'Programmatic scrolling',
+    description:
+      'Tween or spring animations to an edge, an element or by an offset. A running animation stops the moment the user touches, wheels or presses a key.',
+    tryThis: 'Start the slow scroll, then grab the list.',
+    Component: ProgrammaticDemo,
+  },
+  {
+    id: 'scroll-state',
+    label: 'Scroll state',
+    title: 'Scroll state',
+    description:
+      'useScrollState with selectors: the progress bar re-renders on every scroll, the buttons only when an edge is reached or left.',
+    tryThis: 'Scroll the row and watch the buttons disable at each end.',
+    Component: ScrollStateDemo,
+  },
+  {
+    id: 'in-view',
+    label: 'In view',
+    title: 'Reveal on scroll',
+    description:
+      'useInView with once: true. Cards fade in the first time they enter the viewport and stay visible.',
+    tryThis: 'Scroll down to reveal the cards.',
+    Component: InViewDemo,
+  },
+]
+
+export default function App() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100">
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                use-scroller
-              </h1>
-              <p className="text-gray-500 text-sm mt-1">Beautiful, smooth scrolling for React</p>
-            </div>
-            <a
-              href="https://github.com/silvi97lila/use-scroller"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors"
-            >
-              GitHub
-            </a>
-          </div>
-        </div>
-      </header>
+    <div id="top" className="min-h-screen w-full bg-linear-to-br from-gray-50 to-gray-100">
+      <SiteHeader sections={DEMOS} />
 
-      {/* Hero Section */}
-      <section className=" max-w-7xl mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold text-gray-900 mb-4">Interactive Demos</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore different scrolling animations and see what use-scroller can do for your
-            project.
-          </p>
-        </div>
+      <section className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6 sm:py-16">
+        <h1 className="text-4xl font-bold text-balance text-gray-900 sm:text-5xl">
+          Scrolling that behaves on phones
+        </h1>
+        <p className="mt-4 text-lg text-pretty text-gray-600">
+          Native scrolling stays in charge; use-scroller steps in where the platform falls short.
+          The first three demos are about touch, so open this page on a phone.
+        </p>
       </section>
 
-      {/* Demos */}
-      <main className="max-w-7xl mx-auto px-6 pb-20 space-y-20">
-        {/* Momentum Demo */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <MomentumDemo />
-        </div>
-
-        {/* Easing Demo */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <EasingDemo />
-        </div>
-
-        {/* Image Gallery */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <ImageGallery />
-        </div>
-
-        {/* Vertical Scroll Demo */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <VerticalScrollDemo />
-        </div>
-
-        {/* Window Scroll Demo */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <WindowScrollDemo />
-        </div>
+      <main className="mx-auto max-w-7xl space-y-10 px-4 pb-20 sm:space-y-16 sm:px-6">
+        {DEMOS.map(({ id, title, description, tryThis, Component }) => (
+          <section
+            key={id}
+            id={id}
+            aria-labelledby={`${id}-title`}
+            className="rounded-2xl bg-white p-5 shadow-xl sm:p-10"
+          >
+            <h2 id={`${id}-title`} className="text-2xl font-bold text-gray-900">
+              {title}
+            </h2>
+            <p className="mt-2 max-w-[65ch] text-gray-600">{description}</p>
+            <p className="mt-3 text-sm font-medium text-indigo-700">Try it: {tryThis}</p>
+            <div className="mt-6">
+              <Component />
+            </div>
+          </section>
+        ))}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-gray-400">Made with ❤️ using use-scroller</p>
-          <div className="mt-4 space-x-6">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              Documentation
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
-              npm
-            </a>
-            <a
-              href="https://github.com/silvi97lila/use-scroller"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              GitHub
-            </a>
-          </div>
-        </div>
+      <footer className="bg-gray-900 py-10 text-center text-sm text-gray-400">
+        <a
+          href="https://github.com/silvi97lila/use-scroller"
+          className="transition-colors hover:text-white"
+        >
+          use-scroller on GitHub
+        </a>
       </footer>
     </div>
   )
 }
-
-export default App
