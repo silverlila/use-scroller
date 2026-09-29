@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { LAST_SHEET, SECTIONS } from '../meta'
+import { SECTIONS } from '../meta'
 
 export function Section({
   id,
@@ -17,9 +17,6 @@ export function Section({
     <section id={id} className="sec" aria-labelledby={`${id}-title`}>
       <div className="sec-margin" aria-hidden="true">
         <span className="sec-num">{meta.num}</span>
-        <span className="sec-sheet">
-          Sheet {meta.num} / {LAST_SHEET}
-        </span>
       </div>
       <div className="sec-body">
         <p className="kicker">{kicker}</p>

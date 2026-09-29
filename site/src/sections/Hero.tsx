@@ -3,7 +3,7 @@ import { CodeBlock } from '../CodeBlock'
 import { INSTALL } from '../site'
 import { useElementSize } from '../hooks'
 import { DimH } from '../parts/Drawing'
-import { LAST_SHEET, VERSION } from '../meta'
+import { VERSION } from '../meta'
 
 const FIXES = [
   {
@@ -28,9 +28,6 @@ export function Hero() {
     <section id="install" className="sec sec-hero" aria-labelledby="install-title">
       <div className="sec-margin" aria-hidden="true">
         <span className="sec-num">00</span>
-        <span className="sec-sheet">
-          Sheet 00 / {LAST_SHEET}
-        </span>
       </div>
       <div className="sec-body">
         <p className="kicker">Scroll utilities for the web · React hooks on top</p>
