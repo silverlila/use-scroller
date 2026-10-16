@@ -13,6 +13,7 @@ export {
 export { observeScroll, type ScrollState } from './observe-scroll'
 export { lockScroll } from './lock-scroll'
 export { dragScroll, type DragScrollOptions } from './drag-scroll'
+export { readSnapPositions } from './snap'
 export { observeActiveSection } from './active-section'
 export {
   scrollBy,

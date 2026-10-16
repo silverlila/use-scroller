@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { pickSnapTarget, readSnapPositions } from '../../src/core/snap'
+import { readSnapPositions } from '../../src/core'
+import { pickSnapTarget } from '../../src/core/snap'
+import { readSnapPositions as readSnapPositionsFromReactEntry } from '../../src/react'
 import { createBox, mount } from '../helpers/dom'
 
 // Five 150px items in a 200px track: they start at 0, 150, 300, 450 and 600, and the range ends at 550.
@@ -22,6 +24,21 @@ function mountRow(
 describe('readSnapPositions', () => {
   test('aligns item starts with the scrollport start', () => {
     const track = mountRow({ scrollSnapAlign: 'start' })
+
+    expect(readSnapPositions(track, 'x')).toEqual([0, 150, 300, 450, 550])
+  })
+
+  test('is exported from the React entry too', () => {
+    const track = mountRow({ scrollSnapAlign: 'start' })
+
+    expect(readSnapPositionsFromReactEntry(track, 'x')).toEqual([0, 150, 300, 450, 550])
+  })
+
+  test('lists a position once when snap areas with different scroll-snap-stop share it', () => {
+    const track = mountRow({ scrollSnapAlign: 'start' })
+    track.children[2].append(
+      createBox({ width: 150, height: 100 }, { scrollSnapAlign: 'start', scrollSnapStop: 'always' })
+    )
 
     expect(readSnapPositions(track, 'x')).toEqual([0, 150, 300, 450, 550])
   })

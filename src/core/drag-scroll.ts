@@ -2,7 +2,7 @@ import { animateScroll, cancelScroll, type ScrollHandle } from './animate-scroll
 import { fling, projectMomentum } from './fling'
 import { readScroll, writeScroll } from './geometry'
 import { setInlineStyles, type Restore } from './inline-style'
-import { pickSnapTarget, readSnapPositions } from './snap'
+import { pickSnapTarget, readSnapPoints, stopShortOfSnapStops, type SnapPoint } from './snap'
 import type { Axis } from './types'
 import { recordSample, releaseVelocity, type Sample } from './velocity'
 
@@ -22,7 +22,7 @@ interface Pointer {
 }
 
 interface SuspendedSnap {
-  positions: number[]
+  points: SnapPoint[]
   restore: Restore
 }
 
@@ -45,7 +45,7 @@ type Gesture = Pending | Drag
 
 interface Release {
   handle: ScrollHandle
-  positions: number[]
+  points: SnapPoint[]
 }
 
 const DRAG_SLOP = 8
@@ -85,9 +85,9 @@ export function dragScroll(
   // Re-suspended in the same task, since WebKit may re-snap at the next layout before a drag starts.
   function interruptRelease(): SuspendedSnap | null {
     if (!release) return null
-    const { handle, positions } = release
+    const { handle, points } = release
     handle.cancel()
-    return { positions, restore: suspendSnap() }
+    return { points, restore: suspendSnap() }
   }
 
   function suspendSnap(): Restore {
@@ -120,7 +120,7 @@ export function dragScroll(
     element.setPointerCapture(event.pointerId)
     cancelScroll(element)
     const snap = pending.snap ?? {
-      positions: readSnapPositions(element, axis),
+      points: readSnapPoints(element, axis),
       restore: suspendSnap(),
     }
     const startScroll = readScroll(element)[axis]
@@ -161,26 +161,28 @@ export function dragScroll(
     if (ended?.snap) settle(ended.snap, velocity)
   }
 
-  function settle({ positions, restore }: SuspendedSnap, velocity: number) {
-    if (positions.length === 0) {
+  function settle({ points, restore }: SuspendedSnap, velocity: number) {
+    if (points.length === 0) {
       restore()
-      track(fling(element, axis, velocity), positions)
+      track(fling(element, axis, velocity), points)
       return
     }
     const current = readScroll(element)[axis]
-    const target = pickSnapTarget(positions, current, current + projectMomentum(velocity), velocity)
+    const positions = points.map(({ position }) => position)
+    const picked = pickSnapTarget(positions, current, current + projectMomentum(velocity), velocity)
+    const target = stopShortOfSnapStops(points, current, picked)
     // animateScroll suspends snapping itself for the animation and restores it however it ends.
     restore()
     const handle = animateScroll(element, axis === 'x' ? { x: target } : { y: target }, {
       animation: { type: 'spring', velocity: axis === 'x' ? { x: velocity } : { y: velocity } },
       respectReducedMotion: false,
     })
-    track(handle, positions)
+    track(handle, points)
   }
 
-  function track(handle: ScrollHandle | null, positions: number[]) {
+  function track(handle: ScrollHandle | null, points: SnapPoint[]) {
     if (!handle) return
-    const current: Release = { handle, positions }
+    const current: Release = { handle, points }
     release = current
     void handle.finished.then(() => {
       if (release === current) release = null

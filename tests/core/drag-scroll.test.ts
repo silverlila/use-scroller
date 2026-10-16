@@ -24,7 +24,7 @@ function mountTrack(style: Partial<CSSStyleDeclaration> = {}) {
 }
 
 // Pages that snap at their start in a 200px track; 100px pages snap at 0, 100, … 800.
-function mountSnapTrack(pageWidth = 100) {
+function mountSnapTrack(pageWidth = 100, pageStyle: Partial<CSSStyleDeclaration> = {}) {
   const track = mount(
     createBox(
       { width: 200, height: 100 },
@@ -38,7 +38,10 @@ function mountSnapTrack(pageWidth = 100) {
   )
   for (let i = 0; i < 1000 / pageWidth; i++) {
     track.append(
-      createBox({ width: pageWidth, height: 100 }, { flexShrink: '0', scrollSnapAlign: 'start' })
+      createBox(
+        { width: pageWidth, height: 100 },
+        { flexShrink: '0', scrollSnapAlign: 'start', ...pageStyle }
+      )
     )
   }
   return track
@@ -315,6 +318,58 @@ describe('dragScroll', () => {
 
     await settledSnapType(track, 'x mandatory')
     expect(track.scrollLeft).toBe(500)
+  })
+
+  test('a quick release stops at the next snap position when it has scroll-snap-stop: always', async () => {
+    const track = mountSnapTrack(100, { scrollSnapStop: 'always' })
+    attach(track)
+    const finger = touchscreen()
+
+    await dragAcross(finger, track, [140, 120, 100])
+    await finger.up()
+
+    await settledSnapType(track, 'x mandatory')
+    expect(track.scrollLeft).toBe(100)
+  })
+
+  test('a quick release passes snap positions whose scroll-snap-stop is normal', async () => {
+    const track = mountSnapTrack(100, { scrollSnapStop: 'normal' })
+    attach(track)
+    const finger = touchscreen()
+
+    await dragAcross(finger, track, [140, 120, 100])
+    await finger.up()
+
+    await settledSnapType(track, 'x mandatory')
+    expect(track.scrollLeft).toBe(500)
+  })
+
+  test('a quick release backward stops at the first scroll-snap-stop: always behind it', async () => {
+    const track = mountSnapTrack(100, { scrollSnapStop: 'always' })
+    track.scrollLeft = 800
+    attach(track)
+    const finger = touchscreen()
+
+    await dragAcross(finger, track, [160, 180, 200])
+    await finger.up()
+
+    await settledSnapType(track, 'x mandatory')
+    expect(track.scrollLeft).toBe(700)
+  })
+
+  test('a position shared by a normal and an always snap area stops a quick release', async () => {
+    const track = mountSnapTrack()
+    track.children[2].append(
+      createBox({ width: 100, height: 100 }, { scrollSnapAlign: 'start', scrollSnapStop: 'always' })
+    )
+    attach(track)
+    const finger = touchscreen()
+
+    await dragAcross(finger, track, [140, 120, 100])
+    await finger.up()
+
+    await settledSnapType(track, 'x mandatory')
+    expect(track.scrollLeft).toBe(200)
   })
 
   test('a cancelled drag stops without momentum and restores snapping', async () => {

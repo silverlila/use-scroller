@@ -104,7 +104,8 @@ It sets `touch-action: pan-y pinch-zoom` on the track (`pan-x pinch-zoom` for `a
 cross-axis movement scrolls the page natively and pinch-zoom keeps working. A gesture
 is judged after 8px: mostly sideways and the track follows the finger, otherwise it is left to the
 browser. Release continues with momentum and lands on a CSS scroll-snap position if the track has
-any. A drag doesn't fire a click on whatever is under the finger. Wheel, trackpad, keyboard and the scrollbar stay
+any. Like native scrolling, it never carries past a snap position whose area has
+`scroll-snap-stop: always`. A drag doesn't fire a click on whatever is under the finger. Wheel, trackpad, keyboard and the scrollbar stay
 native. `mouse: true` also lets a mouse drag the track.
 
 ### `useScrollLock`
@@ -298,6 +299,7 @@ const stop = observeActiveSection(sections, (index) => highlight(index), {
 readScroll(target) // { x, y, minX, maxX, maxY, viewportWidth, viewportHeight }
 isScrollable(element, 'y')
 findScrollParent(element, 'y') // nearest scrollable ancestor, or window
+readSnapPositions(element, 'x') // CSS scroll-snap positions the container can rest at, ascending
 ```
 
 ## Recipes
