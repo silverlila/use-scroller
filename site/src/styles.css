@@ -202,34 +202,10 @@ ul {
   font-weight: 600;
 }
 
-.titlebar-mark {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid var(--ink);
-  border-radius: 50%;
+.titlebar-logo {
+  width: 22px;
+  height: 22px;
   flex: none;
-}
-
-.titlebar-mark::before,
-.titlebar-mark::after {
-  content: '';
-  position: absolute;
-  background: var(--ink);
-}
-
-.titlebar-mark::before {
-  left: -5px;
-  right: -5px;
-  top: 50%;
-  height: 1px;
-}
-
-.titlebar-mark::after {
-  top: -5px;
-  bottom: -5px;
-  left: 50%;
-  width: 1px;
 }
 
 .titlebar-links {
