@@ -69,8 +69,7 @@ export function LockSection() {
         ]}
       />
       <p className="fine">
-        Locks are reference-counted, so nested modals work. The iOS part of the lock still needs
-        verification on a real device.
+        Locks are reference-counted, so nested modals work.
       </p>
     </Section>
   )

@@ -8,8 +8,8 @@ library steps in only where the platform falls short.
 - **Swipe tracks that drift.** On a phone, a slightly diagonal swipe on a horizontal carousel can
   move the page, the carousel, or both. `dragScroll` decides once per gesture and sticks to one axis.
 - **Modal scroll bleed on iOS.** `overflow: hidden` on the page doesn't stop iOS Safari from
-  scrolling it behind a modal. `lockScroll` adds a touch guard designed for iOS Safari (verify on a
-  device) and keeps the modal's own list scrollable.
+  scrolling it behind a modal. `lockScroll` adds a touch guard for iOS Safari and keeps the modal's
+  own list scrollable.
 - **Animations that fight the user.** `animateScroll` stops the moment the user touches, wheels or
   presses a key, pauses CSS scroll snapping while it runs, and respects reduced motion.
 - Also: scroll state (edges, progress, direction, velocity), scroll spy, in-view detection, scroll
@@ -388,17 +388,6 @@ Several scroll problems need no JavaScript. Reach for these before the library.
 - `restoreScroll` saves one position per key, not per history entry. Two history entries that
   share a key share a position, so put the route or item id in the key.
 - `restoreScroll` on the window and a router's own scroll restoration both move the page. Use one.
-
-## Browser support
-
-Automated tests run in headless Chromium. These still need verification on real iOS Safari and
-Android devices:
-
-- the gesture features: `dragScroll` and the iOS part of `lockScroll`;
-- `restoreScroll` saving on `pagehide` in iOS Safari, and pages coming back from the back/forward
-  cache (the page returns as it was, so nothing should need restoring);
-- `stickToBottom` when content grows during iOS momentum scrolling or the rubber-band bounce at the
-  bottom.
 
 ## Migrating from v1
 

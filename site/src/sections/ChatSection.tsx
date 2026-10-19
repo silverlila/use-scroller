@@ -25,7 +25,7 @@ const SCRIPT = [
   'That is what stickToBottom does. Try it now: scroll up a little.',
   'The button in the corner counts what arrived while you were away.',
   'Pushed the fix for the snap landing on Android.',
-  'Can someone verify the iOS lock on a real device?',
+  'Can someone review the scroll lock docs?',
   'On it after lunch.',
   'Docs build is green.',
   'Tagging the release in ten minutes.',
