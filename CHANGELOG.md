@@ -1,5 +1,11 @@
 # use-scroller
 
+## 2.1.1
+
+### Patch Changes
+
+- 282d684: The npm homepage link now points to the docs site instead of the GitHub README.
+
 ## 2.1.0
 
 ### Minor Changes
