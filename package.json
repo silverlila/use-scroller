@@ -30,6 +30,7 @@
     "type": "git",
     "url": "git+https://github.com/silverlila/use-scroller.git"
   },
+  "homepage": "https://silverlila.github.io/use-scroller/",
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
